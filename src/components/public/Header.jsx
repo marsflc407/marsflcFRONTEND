@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { Mail, Phone, ChevronDown, Menu, X } from "lucide-react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import logo from "@/assets/logo.jpeg";
 import { COMPANY } from "@/config/company";
 import PartnerTicker from "@/components/public/PartnerTicker";
+import { footerSettingsAPI } from "@/utils/api";
 
 const companyLinks = [
   { label: "About Us", to: "/company-overview/about" },
@@ -28,7 +29,29 @@ const linkClassName = ({ isActive }) =>
 function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [companyOpen, setCompanyOpen] = useState(false);
+  const [footerSettings, setFooterSettings] = useState({
+    phone: COMPANY.phone,
+    phoneHref: COMPANY.phoneHref,
+    email: COMPANY.email,
+  });
   const location = useLocation();
+
+  useEffect(() => {
+    let active = true;
+
+    footerSettingsAPI
+      .get()
+      .then((response) => {
+        if (active && response?.data) {
+          setFooterSettings((current) => ({ ...current, ...response.data }));
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -39,24 +62,42 @@ function Header() {
     <header className="sticky top-0 z-40 bg-white">
       <PartnerTicker compact />
       <div className="bg-[#123B63] text-white">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-2 px-4 py-2 text-xs sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-1 font-mono">
-            <a
-              className="transition-colors hover:text-[#0066D6]"
-              href={COMPANY.phoneHref}
-            >
-              {COMPANY.phone}
-            </a>
-            <a
-              className="transition-colors hover:text-[#0066D6]"
-              href={`mailto:${COMPANY.email}`}
-            >
-              {COMPANY.email}
-            </a>
+        <div className="contact-ticker__viewport">
+          <div className="contact-ticker__track">
+            {[false, true].map((hidden) => (
+              <div
+                key={hidden ? "duplicate" : "visible"}
+                className="contact-ticker__group"
+                aria-hidden={hidden}
+              >
+                <a
+                  className="contact-ticker__item transition-colors hover:text-[#0066D6]"
+                  href={footerSettings.phoneHref}
+                  tabIndex={hidden ? -1 : undefined}
+                >
+                  <Phone
+                    className="h-3.5 w-3.5 text-[#0066D6]"
+                    aria-hidden="true"
+                  />
+                  {footerSettings.phone}
+                </a>
+                <a
+                  className="contact-ticker__item transition-colors hover:text-[#0066D6]"
+                  href={`mailto:${footerSettings.email}`}
+                  tabIndex={hidden ? -1 : undefined}
+                >
+                  <Mail
+                    className="h-3.5 w-3.5 text-[#0066D6]"
+                    aria-hidden="true"
+                  />
+                  {footerSettings.email}
+                </a>
+                <span className="contact-ticker__item font-mono text-[10px] uppercase tracking-[0.2em] text-white/60">
+                  24/7 High Capacity Call Center
+                </span>
+              </div>
+            ))}
           </div>
-          <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-white/60 sm:block">
-            24/7 High Capacity Call Center
-          </span>
         </div>
       </div>
 

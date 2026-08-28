@@ -10,6 +10,9 @@ import {
   BriefcaseBusiness,
 } from "lucide-react";
 import { serviceAPI, uploadAPI } from "@/utils/api";
+import AdminPagination, {
+  useAdminPagination,
+} from "@/components/admin/AdminPagination";
 
 const TYPES = [
   { value: "cpv", label: "CPV" },
@@ -44,6 +47,11 @@ export default function ServiceManager() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const { page, pageCount, setPage, pageItems } = useAdminPagination(
+    services,
+    10,
+    filterType,
+  );
 
   const loadServices = async () => {
     setLoading(true);
@@ -490,7 +498,7 @@ export default function ServiceManager() {
                   </tr>
                 </thead>
                 <tbody>
-                  {services.map((service) => (
+                  {pageItems.map((service) => (
                     <tr
                       key={service._id}
                       className="border-b border-[#123B63]/10 last:border-0"
@@ -541,6 +549,11 @@ export default function ServiceManager() {
               </table>
             )}
           </div>
+          <AdminPagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
         </section>
       </div>
     </div>

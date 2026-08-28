@@ -6,6 +6,7 @@ import {
 } from "@/components/site/primitives";
 import { Users, Target, Eye, Handshake } from "lucide-react";
 import { COMPANY, SERVICES } from "@/config/company";
+import useEditableContent from "@/hooks/useEditableContent";
 
 const CHART = [
   { role: "Chairman", desc: "Strategic vision & governance" },
@@ -16,12 +17,16 @@ const CHART = [
 ];
 
 export default function CompanyOverview() {
+  const { get, getItems } = useEditableContent("company-overview");
+  const editableChart = getItems("chart-node");
+  const editableServices = getItems("service");
+
   return (
     <>
       <PageHero
-        label="Company Overview"
-        title={COMPANY.name}
-        intro={COMPANY.category}
+        label={get("hero", "subtitle", "Company Overview")}
+        title={get("hero", "title", COMPANY.name)}
+        intro={get("hero", "content", COMPANY.category)}
       />
 
       {/* About Us */}
@@ -32,16 +37,20 @@ export default function CompanyOverview() {
         <div className="mx-auto max-w-[1400px] px-4">
           <div className="grid gap-16 lg:grid-cols-12">
             <div className="lg:col-span-7">
-              <SectionLabel>About Us</SectionLabel>
+              <SectionLabel>
+                {get("about", "subtitle", "About Us")}
+              </SectionLabel>
               <h2 className="mt-4 font-heading text-3xl font-700 leading-[1.15] text-[#123B63] sm:text-4xl">
-                A Decade of Disciplined Recovery
+                {get("about", "title", "A Decade of Disciplined Recovery")}
               </h2>
               <div className="mt-6 space-y-4 text-lg leading-relaxed text-[#123B63]/75">
-                <p>{COMPANY.description}</p>
+                <p>{get("about", "content", COMPANY.description)}</p>
                 <p>
-                  MARS FLC provides professional legal and financial support
-                  with clear communication and careful handling of institutional
-                  requirements.
+                  {get(
+                    "about-continued",
+                    "content",
+                    "MARS FLC provides professional legal and financial support with clear communication and careful handling of institutional requirements.",
+                  )}
                 </p>
               </div>
             </div>
@@ -49,22 +58,26 @@ export default function CompanyOverview() {
               <div className="grid gap-6">
                 <div className="border-l-2 border-[#0066D6] bg-[#EFF6FF] p-8">
                   <div className="font-mono text-xs uppercase tracking-[0.3em] text-[#0066D6]">
-                    Our Mission
+                    {get("mission", "title", "Our Mission")}
                   </div>
                   <p className="mt-3 text-lg leading-relaxed text-[#123B63]/80">
-                    To recover funds swiftly and amicably, avoiding legal
-                    resources wherever possible Ã¢â‚¬â€ preserving client
-                    relationships while delivering outcomes.
+                    {get(
+                      "mission",
+                      "content",
+                      "To recover funds swiftly and amicably, avoiding legal resources wherever possible, preserving client relationships while delivering outcomes.",
+                    )}
                   </p>
                 </div>
                 <div className="border-l-2 border-[#123B63] bg-[#123B63] p-8 text-white">
                   <div className="font-mono text-xs uppercase tracking-[0.3em] text-[#0066D6]">
-                    Our Vision
+                    {get("vision", "title", "Our Vision")}
                   </div>
                   <p className="mt-3 text-lg leading-relaxed text-white/80">
-                    To be the leading credit risk management agency in
-                    Bangladesh Ã¢â‚¬â€ the metric by which all others are
-                    measured.
+                    {get(
+                      "vision",
+                      "content",
+                      "To be the leading credit risk management agency in Bangladesh, the metric by which all others are measured.",
+                    )}
                   </p>
                 </div>
               </div>
@@ -80,9 +93,13 @@ export default function CompanyOverview() {
       >
         <div className="mx-auto max-w-[1400px] px-4">
           <SectionHeader
-            label="Our Management"
-            title="Governance Built on Integrity"
-            intro="Integrity, accountability and client trust guide the leadership philosophy of MARS FLC."
+            label={get("management", "subtitle", "Our Management")}
+            title={get("management", "title", "Governance Built on Integrity")}
+            intro={get(
+              "management",
+              "content",
+              "Integrity, accountability and client trust guide the leadership philosophy of MARS FLC.",
+            )}
           />
           <div className="mt-12 grid gap-px bg-[#EFF6FF] md:grid-cols-3">
             {[
@@ -123,12 +140,20 @@ export default function CompanyOverview() {
       >
         <div className="mx-auto max-w-[1400px] px-4">
           <SectionHeader
-            label="Our Family"
-            title={<span className="text-white">Our Greatest Strength</span>}
-            intro="A clear operating structure supports accountable consultancy, recovery, verification, and administrative work."
+            label={get("family", "subtitle", "Our Family")}
+            title={
+              <span className="text-white">
+                {get("family", "title", "Our Greatest Strength")}
+              </span>
+            }
+            intro={get(
+              "family",
+              "content",
+              "A clear operating structure supports accountable consultancy, recovery, verification, and administrative work.",
+            )}
           />
           <div className="mt-12 space-y-px">
-            {CHART.map((node, i) => (
+            {(editableChart.length ? editableChart : CHART).map((node, i) => (
               <div
                 key={node.role}
                 className="group flex items-center gap-6 bg-[#0D2F4E] p-6 transition-colors hover:bg-[#16456D]"
@@ -154,12 +179,19 @@ export default function CompanyOverview() {
       <section id="sister-concern" className="scroll-mt-32 py-24">
         <div className="mx-auto max-w-[1400px] px-4">
           <SectionHeader
-            label="Our Services"
-            title="Focused institutional support"
-            intro="Debt collection and recovery, Contact Point Verification, legal and financial support, and administrative support."
+            label={get("services", "subtitle", "Our Services")}
+            title={get("services", "title", "Focused institutional support")}
+            intro={get(
+              "services",
+              "content",
+              "Debt collection and recovery, Contact Point Verification, legal and financial support, and administrative support.",
+            )}
           />
           <div className="mt-12 grid gap-px bg-[#EFF6FF] sm:grid-cols-2 lg:grid-cols-4">
-            {SERVICES.map((service, i) => (
+            {(editableServices.length
+              ? editableServices.map((item) => item.title)
+              : SERVICES
+            ).map((service, i) => (
               <div
                 key={service}
                 className="group bg-white p-8 text-center transition-colors hover:bg-[#123B63] hover:text-white"

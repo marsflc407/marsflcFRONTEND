@@ -5,6 +5,8 @@ import {
   SectionHeader,
   SectionLabel,
 } from "@/components/site/primitives";
+import useEditableContent from "@/hooks/useEditableContent";
+import { uploadAPI } from "@/utils/api";
 const employees = [
   {
     name: "Ayesha Rahman",
@@ -83,11 +85,43 @@ const employees = [
   },
 ];
 
-const hierarchy = employees.slice(0, 5);
-
 export default function Family() {
+  const { records, get } = useEditableContent("family");
   const [employeeStart, setEmployeeStart] = useState(0);
   const [visibleEmployees, setVisibleEmployees] = useState(5);
+  const [employeeImages, setEmployeeImages] = useState([]);
+  const editableEmployees = records
+    .filter(
+      (record) => record.section === "employee" && record.isActive !== false,
+    )
+    .map((record) => ({
+      name: record.subtitle || "MARS FLC Team",
+      role: record.title || "Team Member",
+      description: record.content || "",
+      level: record.section,
+      image: record.image,
+    }));
+  const displayedEmployees = (
+    editableEmployees.length ? editableEmployees : employees
+  ).map((employee, index) => ({
+    ...employee,
+    image:
+      employee.image || employeeImages[index]?.url || employees[index]?.image,
+  }));
+
+  useEffect(() => {
+    uploadAPI
+      .getAll()
+      .then((response) => {
+        setEmployeeImages(
+          (response?.data || []).filter(
+            (image) =>
+              image.section === "company-overview" && image.isActive !== false,
+          ),
+        );
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const updateVisibleEmployees = () => {
@@ -104,45 +138,65 @@ export default function Family() {
 
   useEffect(() => {
     setEmployeeStart((start) =>
-      Math.min(start, Math.max(0, employees.length - visibleEmployees)),
+      Math.min(
+        start,
+        Math.max(0, displayedEmployees.length - visibleEmployees),
+      ),
     );
-  }, [visibleEmployees]);
+  }, [visibleEmployees, displayedEmployees.length]);
 
-  const visibleEmployeeCards = employees.slice(
+  const visibleEmployeeCards = displayedEmployees.slice(
     employeeStart,
     employeeStart + visibleEmployees,
   );
   const canGoBack = employeeStart > 0;
-  const canGoForward = employeeStart + visibleEmployees < employees.length;
+  const canGoForward =
+    employeeStart + visibleEmployees < displayedEmployees.length;
 
   return (
     <>
       <PageHero
-        label="Our Family"
-        title="Strength in Structure"
-        intro="A coordinated team with one standard of accountability, from the boardroom to every field visit."
+        label={get("hero", "subtitle", "Our Family")}
+        title={get("hero", "title", "Strength in Structure")}
+        intro={get(
+          "hero",
+          "content",
+          "A coordinated team with one standard of accountability, from the boardroom to every field visit.",
+        )}
       />
 
       <section className="border-b border-[#EFF6FF] py-20 md:py-24">
         <div className="container-custom mx-auto grid max-w-[1400px] gap-12 px-4 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-5">
-            <SectionLabel>Team Strength</SectionLabel>
+            <SectionLabel>
+              {get("strength", "subtitle", "Team Strength")}
+            </SectionLabel>
             <h2 className="mt-4 font-heading text-3xl font-700 leading-[1.1] text-[#123B63] sm:text-4xl">
-              One team, focused support
+              {get("strength", "title", "One team, focused support")}
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-[#123B63]/70">
-              MARS FLC's strength comes from a disciplined team that shares
-              information, owns outcomes, and understands institutional needs.
+              {get(
+                "strength",
+                "content",
+                "MARS FLC's strength comes from a disciplined team that shares information, owns outcomes, and understands institutional needs.",
+              )}
             </p>
           </div>
           <div className="border-l-2 border-[#0066D6] bg-[#EFF6FF] p-8 lg:col-span-7 md:p-10">
             <Building2 className="h-8 w-8 text-[#0066D6]" aria-hidden="true" />
             <p className="mt-6 font-heading text-3xl font-700 leading-tight text-[#123B63] sm:text-4xl">
-              We provide professional recovery and consultancy support.
+              {get(
+                "structure",
+                "title",
+                "We provide professional recovery and consultancy support.",
+              )}
             </p>
             <p className="mt-4 text-sm leading-relaxed text-[#123B63]/65">
-              Our structure makes responsibility visible and keeps every level
-              connected to the client outcome.
+              {get(
+                "structure",
+                "content",
+                "Our structure makes responsibility visible and keeps every level connected to the client outcome.",
+              )}
             </p>
           </div>
         </div>
@@ -151,16 +205,22 @@ export default function Family() {
       <section className="border-b border-[#EFF6FF] bg-[#123B63] py-20 text-white md:py-24">
         <div className="container-custom mx-auto max-w-[1000px] px-4">
           <SectionHeader
-            label="Organizational Chart"
+            label={get("chart", "subtitle", "Organizational Chart")}
             title={
-              <span className="text-white">A clear line of responsibility</span>
+              <span className="text-white">
+                {get("chart", "title", "A clear line of responsibility")}
+              </span>
             }
-            intro="Every role contributes to a single accountable recovery and verification workflow."
+            intro={get(
+              "chart",
+              "content",
+              "Every role contributes to a single accountable recovery and verification workflow.",
+            )}
           />
           <div className="relative mt-12">
             <div className="absolute bottom-10 left-5 top-10 w-px bg-white/20 sm:left-1/2 sm:-translate-x-1/2" />
             <div className="space-y-4">
-              {hierarchy.map((node, index) => (
+              {displayedEmployees.slice(0, 5).map((node, index) => (
                 <div
                   key={node.role}
                   className={`relative flex items-center gap-4 sm:gap-8 ${index % 2 === 1 ? "sm:flex-row-reverse" : ""}`}
@@ -206,15 +266,19 @@ export default function Family() {
       <section className="py-20 md:py-24">
         <div className="container-custom mx-auto max-w-[1400px] px-4">
           <SectionHeader
-            label="Our Employees"
-            title="People behind the process"
-            intro="Professional roles supporting one accountable recovery and verification workflow. Temporary portraits and names can be replaced with approved employee profiles."
+            label={get("employees", "subtitle", "Our Employees")}
+            title={get("employees", "title", "People behind the process")}
+            intro={get(
+              "employees",
+              "content",
+              "Professional roles supporting one accountable recovery and verification workflow.",
+            )}
           />
           <div className="mt-12 flex items-center justify-between gap-4">
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#123B63]/55">
               Showing {employeeStart + 1}-
               {Math.min(employeeStart + visibleEmployees, employees.length)} of{" "}
-              {employees.length}
+              {displayedEmployees.length}
             </p>
             <div className="flex gap-2">
               <button

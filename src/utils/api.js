@@ -58,6 +58,7 @@ export const uploadAPI = {
   uploadCv: (formData) => api.post("/upload/cv", formData),
   uploadMultiple: (formData) => api.post("/upload/multiple", formData),
   delete: (id) => api.delete(`/upload/${id}`),
+  replace: (id, formData) => api.put(`/upload/${id}`, formData),
   getAll: () => api.get("/upload"),
 };
 
@@ -94,6 +95,16 @@ export const heroSlideAPI = {
 export const contactSettingsAPI = {
   get: () => api.get("/contact-settings"),
   update: (data) => api.put("/contact-settings", data),
+};
+
+export const footerSettingsAPI = {
+  get: () => api.get("/footer-settings"),
+  update: (data) => api.put("/footer-settings", data),
+};
+
+export const debtCollectionSettingsAPI = {
+  get: () => api.get("/debt-collection-settings"),
+  update: (data) => api.put("/debt-collection-settings", data),
 };
 
 export const contactAPI = {

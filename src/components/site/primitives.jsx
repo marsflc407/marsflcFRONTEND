@@ -81,7 +81,7 @@ export function PageHero({ label, title, intro, image }) {
             key={currentImage}
             src={heroImages[currentImage % heroImages.length]}
             alt=""
-            className="hero-slide-in h-full w-full object-cover"
+            className="hero-image-enter h-full w-full object-cover"
           />
         </div>
       )}

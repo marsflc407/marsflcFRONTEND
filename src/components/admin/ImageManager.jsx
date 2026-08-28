@@ -7,10 +7,14 @@ import {
   Upload,
 } from "lucide-react";
 import { uploadAPI } from "@/utils/api";
+import AdminPagination, {
+  useAdminPagination,
+} from "@/components/admin/AdminPagination";
 
 const SECTIONS = [
   { value: "hero", label: "Hero" },
   { value: "team", label: "Team" },
+  { value: "company-overview", label: "Company Overview" },
   { value: "services", label: "Services" },
   { value: "sister-concern", label: "Sister Concern" },
   { value: "other", label: "Other" },
@@ -33,6 +37,8 @@ export default function ImageManager() {
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const { page, pageCount, setPage, pageItems } = useAdminPagination(images);
+  const [replacingId, setReplacingId] = useState(null);
 
   const loadImages = async () => {
     setLoading(true);
@@ -125,6 +131,31 @@ export default function ImageManager() {
       setError(getErrorMessage(deleteError, "Unable to delete image."));
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleReplace = async (image, file) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Please choose an image file.");
+      return;
+    }
+    setReplacingId(image._id);
+    setError("");
+    setNotice("");
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("title", image.title || "");
+      formData.append("alt", image.alt || "");
+      formData.append("section", image.section || "other");
+      await uploadAPI.replace(image._id, formData);
+      setNotice("Image replaced successfully.");
+      await loadImages();
+    } catch (replaceError) {
+      setError(getErrorMessage(replaceError, "Unable to replace image."));
+    } finally {
+      setReplacingId(null);
     }
   };
 
@@ -277,7 +308,7 @@ export default function ImageManager() {
             </div>
           ) : (
             <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {images.map((image) => (
+              {pageItems.map((image) => (
                 <article
                   key={image._id}
                   className="overflow-hidden border border-[#123B63]/10 bg-white"
@@ -317,11 +348,30 @@ export default function ImageManager() {
                       )}
                       {deletingId === image._id ? "Deleting..." : "Delete"}
                     </button>
+                    <label className="mt-4 ml-4 inline-flex cursor-pointer items-center gap-2 text-sm text-[#0066D6] hover:text-[#123B63]">
+                      <Upload className="h-4 w-4" />
+                      {replacingId === image._id ? "Replacing..." : "Replace"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="sr-only"
+                        disabled={replacingId === image._id}
+                        onChange={(event) => {
+                          handleReplace(image, event.target.files?.[0]);
+                          event.target.value = "";
+                        }}
+                      />
+                    </label>
                   </div>
                 </article>
               ))}
             </div>
           )}
+          <AdminPagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
         </section>
       </div>
     </div>

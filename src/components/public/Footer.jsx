@@ -1,15 +1,36 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.jpeg";
 import { COMPANY } from "@/config/company";
+import { footerSettingsAPI } from "@/utils/api";
 
-const quickLinks = [
-  { label: "Home", to: "/" },
-  { label: "Contact Point Verification", to: "/cpv" },
-  { label: "Debt Collection", to: "/debt-collection" },
-  { label: "About Us", to: "/company-overview" },
-  { label: "Contact", to: "/contact" },
-];
+const DEFAULT_SETTINGS = {
+  brandName: COMPANY.name,
+  description: COMPANY.description,
+  quickLinks: [
+    { label: "Home", to: "/" },
+    { label: "Contact Point Verification", to: "/cpv" },
+    { label: "Debt Collection", to: "/debt-collection" },
+    { label: "About Us", to: "/company-overview" },
+    { label: "Contact", to: "/contact" },
+  ],
+  officeTitle: "Head Office",
+  address: COMPANY.address,
+  phone: COMPANY.phone,
+  phoneHref: COMPANY.phoneHref,
+  email: COMPANY.email,
+  hoursTitle: "Operational Hours",
+  hours: [
+    { title: "Call Center", value: "24 / 7 / 365" },
+    { title: "Field Operations", value: "Sun-Fri - 8AM-8PM" },
+    { title: "Reporting TAT", value: "30-Minute Feedback" },
+  ],
+  socialLinks: [],
+  website: COMPANY.website,
+  websiteHref: COMPANY.websiteHref,
+  copyrightText: `${COMPANY.name} (MARS FLC). All rights reserved.`,
+};
 
 const buildings = [
   "h-8 w-6",
@@ -26,6 +47,29 @@ const buildings = [
 ];
 
 function Footer() {
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+
+  useEffect(() => {
+    footerSettingsAPI
+      .get()
+      .then((response) => {
+        if (response?.data) {
+          setSettings((current) => ({
+            ...current,
+            ...response.data,
+            quickLinks: response.data.quickLinks?.length
+              ? response.data.quickLinks
+              : current.quickLinks,
+            hours: response.data.hours?.length
+              ? response.data.hours
+              : current.hours,
+            socialLinks: response.data.socialLinks || [],
+          }));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <footer className="relative overflow-hidden bg-[#123B63] text-white">
       <div className="mx-auto max-w-[1400px] px-4 py-16">
@@ -38,11 +82,11 @@ function Footer() {
                 className="h-11 w-11 object-contain"
               />
               <div className="font-heading text-sm font-700 uppercase tracking-[0.15em]">
-                {COMPANY.name}
+                {settings.brandName}
               </div>
             </div>
             <p className="max-w-sm text-sm leading-relaxed text-white/60">
-              {COMPANY.description}
+              {settings.description}
             </p>
           </section>
 
@@ -51,44 +95,74 @@ function Footer() {
               Quick Links
             </h2>
             <ul className="space-y-2.5 text-sm text-white/70">
-              {quickLinks.map((link) => (
-                <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    className="transition-colors hover:text-white"
-                  >
-                    {link.label}
-                  </Link>
+              {settings.quickLinks.map((link, index) => (
+                <li key={`${link.to}-${index}`}>
+                  {link.to?.startsWith("http") ? (
+                    <a
+                      href={link.to}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.to || "/"}
+                      className="transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
+            {settings.socialLinks.length > 0 && (
+              <div className="mt-6 flex flex-wrap gap-4 text-sm text-white/70">
+                {settings.socialLinks.map((social, index) => (
+                  <a
+                    key={`${social.platform}-${index}`}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 transition-colors hover:text-white"
+                  >
+                    <ExternalLink
+                      className="h-4 w-4 text-[#0066D6]"
+                      aria-hidden="true"
+                    />
+                    {social.platform}
+                  </a>
+                ))}
+              </div>
+            )}
           </section>
 
           <section>
             <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-[#0066D6]">
-              Head Office
+              {settings.officeTitle}
             </h2>
             <ul className="space-y-3 text-sm text-white/70">
               <li className="flex gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#0066D6]" />
-                <span>{COMPANY.address}</span>
+                <span>{settings.address}</span>
               </li>
               <li className="flex gap-2">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#0066D6]" />
                 <a
-                  href={COMPANY.phoneHref}
+                  href={settings.phoneHref}
                   className="font-mono transition-colors hover:text-white"
                 >
-                  {COMPANY.phone}
+                  {settings.phone}
                 </a>
               </li>
               <li className="flex gap-2">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#0066D6]" />
                 <a
-                  href={`mailto:${COMPANY.email}`}
+                  href={`mailto:${settings.email}`}
                   className="font-mono transition-colors hover:text-white"
                 >
-                  {COMPANY.email}
+                  {settings.email}
                 </a>
               </li>
             </ul>
@@ -96,27 +170,20 @@ function Footer() {
 
           <section>
             <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-[#0066D6]">
-              Operational Hours
+              {settings.hoursTitle}
             </h2>
             <div className="space-y-3 text-sm text-white/70">
-              <div className="border-l-2 border-[#0066D6] pl-3">
-                <div className="font-heading font-600 text-white">
-                  Call Center
+              {settings.hours.map((item, index) => (
+                <div
+                  key={`${item.title}-${index}`}
+                  className={`border-l-2 ${index === 0 ? "border-[#0066D6]" : "border-white/30"} pl-3`}
+                >
+                  <div className="font-heading font-600 text-white">
+                    {item.title}
+                  </div>
+                  <div className="font-mono text-xs">{item.value}</div>
                 </div>
-                <div className="font-mono text-xs">24 / 7 / 365</div>
-              </div>
-              <div className="border-l-2 border-white/30 pl-3">
-                <div className="font-heading font-600 text-white">
-                  Field Operations
-                </div>
-                <div className="font-mono text-xs">Sun-Fri - 8AM-8PM</div>
-              </div>
-              <div className="border-l-2 border-white/30 pl-3">
-                <div className="font-heading font-600 text-white">
-                  Reporting TAT
-                </div>
-                <div className="font-mono text-xs">30-Minute Feedback</div>
-              </div>
+              ))}
             </div>
           </section>
         </div>
@@ -137,18 +204,34 @@ function Footer() {
         </div>
 
         <div className="mt-6 flex flex-col items-center justify-between gap-4 text-xs text-white/40 sm:flex-row">
-          <p>
-            Copyright {new Date().getFullYear()} Mars Financial & Legal
-            Consultancy (MARS FLC). All rights reserved.
-          </p>
-          <a
-            href={COMPANY.websiteHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono uppercase tracking-[0.2em] hover:text-white"
+          <Link
+            to="/admin/dashboard"
+            className="transition-colors hover:text-white"
+            aria-label="Open MARS FLC admin dashboard"
           >
-            {COMPANY.website}
-          </a>
+            Copyright {new Date().getFullYear()} {settings.copyrightText}
+          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end">
+            <a
+              href={settings.websiteHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono uppercase tracking-[0.2em] hover:text-white"
+            >
+              {settings.website}
+            </a>
+            <span className="text-white/25" aria-hidden="true">
+              /
+            </span>
+            <a
+              href="https://www.linkedin.com/in/fahim-bafu/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-white"
+            >
+              Developed By Bafu
+            </a>
+          </div>
         </div>
       </div>
     </footer>

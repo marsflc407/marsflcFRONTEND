@@ -42,16 +42,29 @@ const slides = [
 function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [managedSlides, setManagedSlides] = useState([]);
+  const [previousSlide, setPreviousSlide] = useState(null);
+  const [transitioning, setTransitioning] = useState(false);
 
   const visibleSlides = managedSlides.length ? managedSlides : slides;
 
   useEffect(() => {
     const interval = window.setInterval(() => {
+      setPreviousSlide(currentSlide);
       setCurrentSlide((slide) => (slide + 1) % visibleSlides.length);
+      setTransitioning(true);
     }, 3000);
 
     return () => window.clearInterval(interval);
-  }, [visibleSlides.length]);
+  }, [currentSlide, visibleSlides.length]);
+
+  useEffect(() => {
+    if (!transitioning) return undefined;
+    const timeout = window.setTimeout(() => {
+      setPreviousSlide(null);
+      setTransitioning(false);
+    }, 1100);
+    return () => window.clearTimeout(timeout);
+  }, [transitioning]);
 
   useEffect(() => {
     heroSlideAPI
@@ -63,7 +76,11 @@ function HeroSlider() {
   }, []);
 
   const goToSlide = (slide) => {
-    setCurrentSlide((slide + visibleSlides.length) % visibleSlides.length);
+    const nextSlide = (slide + visibleSlides.length) % visibleSlides.length;
+    if (nextSlide === currentSlide) return;
+    setPreviousSlide(currentSlide);
+    setCurrentSlide(nextSlide);
+    setTransitioning(true);
   };
 
   const slide = visibleSlides[currentSlide % visibleSlides.length];
@@ -71,14 +88,25 @@ function HeroSlider() {
   return (
     <section className="relative flex min-h-[78vh] items-center overflow-hidden bg-[#123B63] text-white sm:min-h-[84vh]">
       <div className="absolute inset-0">
+        {previousSlide !== null && (
+          <img
+            key={`exit-${previousSlide}`}
+            src={
+              visibleSlides[previousSlide]?.image ||
+              fallbackHeroImages[previousSlide % fallbackHeroImages.length]
+            }
+            alt=""
+            className="hero-image-exit absolute inset-0 h-full w-full object-cover"
+          />
+        )}
         <img
-          key={currentSlide}
+          key={`enter-${currentSlide}`}
           src={
             slide.image ||
             fallbackHeroImages[currentSlide % fallbackHeroImages.length]
           }
           alt=""
-          className="hero-slide-in absolute inset-0 h-full w-full object-cover"
+          className="hero-image-enter absolute inset-0 h-full w-full object-cover"
         />
       </div>
 

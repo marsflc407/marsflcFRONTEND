@@ -9,6 +9,9 @@ import {
   X,
 } from "lucide-react";
 import { heroSlideAPI } from "@/utils/api";
+import AdminPagination, {
+  useAdminPagination,
+} from "@/components/admin/AdminPagination";
 
 const EMPTY_FORM = {
   eyebrow: "Mars Financial & Legal Consultancy",
@@ -32,6 +35,7 @@ export default function HeroSlideManager() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const { page, pageCount, setPage, pageItems } = useAdminPagination(slides);
 
   const loadSlides = async () => {
     setLoading(true);
@@ -328,7 +332,7 @@ export default function HeroSlideManager() {
                   </tr>
                 </thead>
                 <tbody>
-                  {slides.map((slide) => (
+                  {pageItems.map((slide) => (
                     <tr
                       key={slide._id}
                       className="border-b border-[#123B63]/10 last:border-0"
@@ -373,6 +377,11 @@ export default function HeroSlideManager() {
               </table>
             )}
           </div>
+          <AdminPagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
         </section>
       </div>
     </div>

@@ -10,8 +10,22 @@ import {
   X,
 } from "lucide-react";
 import { contentAPI } from "@/utils/api";
+import AdminPagination, {
+  useAdminPagination,
+} from "@/components/admin/AdminPagination";
 
-const PAGES = ["home", "about", "cpv", "debt-collection", "careers", "contact"];
+const PAGES = [
+  "home",
+  "company-overview",
+  "about",
+  "management",
+  "family",
+  "sister-concern",
+  "cpv",
+  "debt-collection",
+  "careers",
+  "contact",
+];
 
 const EMPTY_FORM = {
   page: "home",
@@ -19,6 +33,9 @@ const EMPTY_FORM = {
   title: "",
   subtitle: "",
   content: "",
+  image: "",
+  buttonLabel: "",
+  buttonUrl: "",
   order: 0,
   isActive: true,
 };
@@ -42,6 +59,11 @@ export default function ContentManager() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const { page, pageCount, setPage, pageItems } = useAdminPagination(
+    content,
+    10,
+    filterPage,
+  );
 
   const loadContent = async () => {
     setLoading(true);
@@ -97,6 +119,9 @@ export default function ContentManager() {
       title: record.title || "",
       subtitle: record.subtitle || "",
       content: record.content || "",
+      image: record.image || "",
+      buttonLabel: record.buttonLabel || "",
+      buttonUrl: record.buttonUrl || "",
       order: record.order ?? 0,
       isActive: record.isActive ?? true,
     });
@@ -289,6 +314,49 @@ export default function ContentManager() {
             </div>
             <div>
               <label
+                htmlFor="content-image"
+                className="mb-2 block text-sm font-600"
+              >
+                Image URL
+              </label>
+              <input
+                id="content-image"
+                value={form.image}
+                onChange={update("image")}
+                className={inputClass}
+                placeholder="Use an uploaded image URL"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="content-button-label"
+                className="mb-2 block text-sm font-600"
+              >
+                Button Label
+              </label>
+              <input
+                id="content-button-label"
+                value={form.buttonLabel}
+                onChange={update("buttonLabel")}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="content-button-url"
+                className="mb-2 block text-sm font-600"
+              >
+                Button URL or Route
+              </label>
+              <input
+                id="content-button-url"
+                value={form.buttonUrl}
+                onChange={update("buttonUrl")}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label
                 htmlFor="content-order"
                 className="mb-2 block text-sm font-600"
               >
@@ -394,7 +462,7 @@ export default function ContentManager() {
                   </tr>
                 </thead>
                 <tbody>
-                  {content.map((record) => (
+                  {pageItems.map((record) => (
                     <tr
                       key={record._id}
                       className="border-b border-[#123B63]/10 last:border-0"
@@ -445,6 +513,11 @@ export default function ContentManager() {
               </table>
             )}
           </div>
+          <AdminPagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
         </section>
       </div>
     </div>

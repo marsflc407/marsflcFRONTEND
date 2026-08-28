@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { BriefcaseBusiness, Edit3, Plus, Trash2, X } from "lucide-react";
 import { careerAPI } from "@/utils/api";
+import AdminPagination, {
+  useAdminPagination,
+} from "@/components/admin/AdminPagination";
 
 const EMPTY_FORM = {
   position: "",
@@ -24,6 +27,7 @@ export default function CareerManager() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const { page, pageCount, setPage, pageItems } = useAdminPagination(careers);
 
   const loadCareers = async () => {
     setLoading(true);
@@ -255,7 +259,7 @@ export default function CareerManager() {
             <p className="p-8 text-sm text-[#123B63]/60">No job posts found.</p>
           ) : (
             <div className="divide-y divide-[#123B63]/10">
-              {careers.map((career) => (
+              {pageItems.map((career) => (
                 <div
                   key={career._id}
                   className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:justify-between"
@@ -302,6 +306,11 @@ export default function CareerManager() {
               ))}
             </div>
           )}
+          <AdminPagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
         </section>
       </div>
     </div>

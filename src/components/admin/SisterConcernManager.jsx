@@ -10,6 +10,9 @@ import {
   X,
 } from "lucide-react";
 import { sisterConcernAPI, uploadAPI } from "@/utils/api";
+import AdminPagination, {
+  useAdminPagination,
+} from "@/components/admin/AdminPagination";
 
 const EMPTY_FORM = {
   name: "",
@@ -36,6 +39,8 @@ export default function SisterConcernManager() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const { page, pageCount, setPage, pageItems } =
+    useAdminPagination(sisterConcerns);
 
   const loadSisterConcerns = async () => {
     setLoading(true);
@@ -380,7 +385,7 @@ export default function SisterConcernManager() {
                   </tr>
                 </thead>
                 <tbody>
-                  {sisterConcerns.map((sisterConcern) => (
+                  {pageItems.map((sisterConcern) => (
                     <tr
                       key={sisterConcern._id}
                       className="border-b border-[#123B63]/10 last:border-0"
@@ -445,6 +450,11 @@ export default function SisterConcernManager() {
               </table>
             )}
           </div>
+          <AdminPagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
         </section>
       </div>
     </div>

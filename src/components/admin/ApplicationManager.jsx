@@ -9,6 +9,9 @@ import {
   X,
 } from "lucide-react";
 import { applicationAPI } from "@/utils/api";
+import AdminPagination, {
+  useAdminPagination,
+} from "@/components/admin/AdminPagination";
 
 const STATUSES = ["pending", "reviewed", "accepted", "rejected"];
 const inputClass =
@@ -39,6 +42,8 @@ export default function ApplicationManager() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const { page, pageCount, setPage, pageItems } =
+    useAdminPagination(applications);
 
   const loadApplications = async () => {
     setLoading(true);
@@ -194,7 +199,7 @@ export default function ApplicationManager() {
                   </tr>
                 </thead>
                 <tbody>
-                  {applications.map((application) => (
+                  {pageItems.map((application) => (
                     <tr
                       key={application._id}
                       className="border-b border-[#123B63]/10 last:border-0"
@@ -270,6 +275,11 @@ export default function ApplicationManager() {
               </table>
             )}
           </div>
+          <AdminPagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
         </section>
       </div>
 

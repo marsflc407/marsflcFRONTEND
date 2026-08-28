@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Check, LoaderCircle, Mail, Trash2 } from "lucide-react";
 import { contactAPI } from "@/utils/api";
+import AdminPagination, {
+  useAdminPagination,
+} from "@/components/admin/AdminPagination";
 
 const getErrorMessage = (error, fallback) =>
   error?.response?.data?.message || error?.message || fallback;
@@ -20,6 +23,7 @@ export default function MessageManager() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const { page, pageCount, setPage, pageItems } = useAdminPagination(messages);
 
   useEffect(() => {
     contactAPI
@@ -154,7 +158,7 @@ export default function MessageManager() {
                   </tr>
                 </thead>
                 <tbody>
-                  {messages.map((message) => (
+                  {pageItems.map((message) => (
                     <tr
                       key={message._id}
                       className={`border-b border-[#123B63]/10 last:border-0 ${message.read ? "" : "bg-[#0066D6]/[0.04]"}`}
@@ -231,6 +235,11 @@ export default function MessageManager() {
               </table>
             )}
           </div>
+          <AdminPagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
         </section>
       </div>
     </div>

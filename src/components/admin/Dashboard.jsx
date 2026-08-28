@@ -7,6 +7,7 @@ import {
   Contact,
   Mail,
   FileText,
+  Footprints,
   ImagePlus,
   House,
   LayoutDashboard,
@@ -31,6 +32,13 @@ const NAV_ITEMS = [
   { label: "Dashboard", to: "/admin/dashboard", icon: LayoutDashboard },
   { label: "Home", to: "/admin/home", icon: House },
   { label: "Contact", to: "/admin/contact", icon: Contact },
+  { label: "Company Overview", to: "/admin/company-overview", icon: Building2 },
+  {
+    label: "Debt Collection",
+    to: "/admin/debt-collection",
+    icon: BriefcaseBusiness,
+  },
+  { label: "Footer", to: "/admin/footer", icon: Footprints },
   { label: "Messages", to: "/admin/messages", icon: Mail },
   { label: "Content", to: "/admin/content", icon: FileText },
   { label: "Services", to: "/admin/services", icon: BriefcaseBusiness },
@@ -116,7 +124,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between border-b border-white/10 pb-6">
           <Link
             to="/admin/dashboard"
-            className="font-heading text-xl font-700 tracking-[0.04em] text-white"
+            className="font-heading text-2xl font-700 tracking-[0.04em] text-white"
           >
             MARS <span className="text-[#0066D6]">FLC ADMIN</span>
           </Link>

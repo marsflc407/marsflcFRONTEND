@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .btn-crimson {
+    @apply inline-flex items-center justify-center gap-2 bg-[#00A651] px-5 py-3 font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-[#008A43] active:bg-[#00783a] disabled:cursor-not-allowed disabled:opacity-60;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -15,17 +21,41 @@ body {
 
 @keyframes hero-slide-in {
   from {
-    opacity: 0.82;
-    transform: translateX(4%);
+    opacity: 0;
   }
   to {
     opacity: 1;
-    transform: translateX(0);
   }
 }
 
 .hero-slide-in {
   animation: hero-slide-in 900ms ease-out both;
+}
+
+@keyframes hero-image-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-image-exit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.hero-image-enter {
+  animation: hero-image-enter 1100ms ease-in-out both;
+}
+
+.hero-image-exit {
+  animation: hero-image-exit 1100ms ease-in-out both;
 }
 
 @keyframes partner-ticker-ltr {
@@ -35,6 +65,50 @@ body {
   to {
     transform: translateX(0);
   }
+}
+
+@keyframes contact-ticker-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.contact-ticker__viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.contact-ticker__track {
+  display: flex;
+  width: max-content;
+  animation: contact-ticker-rtl 28s linear infinite;
+  will-change: transform;
+}
+
+.contact-ticker__group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 1.5rem;
+  min-width: 100vw;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+}
+
+.contact-ticker__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+.contact-ticker__track:hover {
+  animation-play-state: paused;
 }
 
 .partner-ticker {
@@ -133,6 +207,10 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .partner-ticker__track {
+    animation: none;
+  }
+
+  .contact-ticker__track {
     animation: none;
   }
 }

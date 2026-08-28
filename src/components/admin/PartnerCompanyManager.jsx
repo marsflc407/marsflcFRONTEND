@@ -7,6 +7,9 @@ import {
   Upload,
 } from "lucide-react";
 import { partnerCompanyAPI } from "@/utils/api";
+import AdminPagination, {
+  useAdminPagination,
+} from "@/components/admin/AdminPagination";
 
 const EMPTY_FORM = { name: "", image: null };
 const inputClass =
@@ -23,6 +26,8 @@ export default function PartnerCompanyManager() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const { page, pageCount, setPage, pageItems } =
+    useAdminPagination(partnerCompanies);
 
   const loadPartnerCompanies = async () => {
     setLoading(true);
@@ -218,7 +223,7 @@ export default function PartnerCompanyManager() {
                   </tr>
                 </thead>
                 <tbody>
-                  {partnerCompanies.map((partnerCompany) => (
+                  {pageItems.map((partnerCompany) => (
                     <tr
                       key={partnerCompany._id}
                       className="border-b border-[#123B63]/10 last:border-0"
@@ -256,6 +261,11 @@ export default function PartnerCompanyManager() {
               </table>
             )}
           </div>
+          <AdminPagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
         </section>
       </div>
     </div>
