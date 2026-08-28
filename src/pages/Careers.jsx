@@ -1,30 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PageHero, SectionHeader } from "@/components/site/primitives";
-import { applicationAPI } from "@/utils/api";
+import { applicationAPI, careerAPI, uploadAPI } from "@/utils/api";
 import {
-  Mail,
   ShieldCheck,
-  Briefcase,
   Search,
   FileText,
   CheckCircle2,
   Send,
 } from "lucide-react";
-import { COMPANY } from "@/config/company";
-
-const POSITIONS = [
-  {
-    title: "Collection Executive",
-    type: "Full-Time",
-    desc: "Engage borrowers through ethical, law-compliant recovery practices and achieve portfolio targets.",
-  },
-  {
-    title: "Contact Point Verification (CPV) Executive",
-    type: "Full-Time",
-    desc: "Conduct doorstep, employment and document verification with surgical precision across assigned districts.",
-  },
-];
-
 const BG_CHECK = [
   {
     group: "Professional History",
@@ -49,6 +32,8 @@ const BG_CHECK = [
 ];
 
 export default function Careers() {
+  const [positions, setPositions] = useState([]);
+  const [loadingPositions, setLoadingPositions] = useState(true);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -60,6 +45,31 @@ export default function Careers() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const applicationRef = useRef(null);
+
+  useEffect(() => {
+    const loadPositions = async () => {
+      try {
+        const response = await careerAPI.getAll();
+        setPositions(response?.data || []);
+      } catch (loadError) {
+        setError(
+          loadError.response?.data?.message || "Unable to load open roles.",
+        );
+      } finally {
+        setLoadingPositions(false);
+      }
+    };
+    loadPositions();
+  }, []);
+
+  const scrollToApplication = (position = "") => {
+    setForm((current) => ({ ...current, position }));
+    applicationRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   const update = (field) => (event) => {
     const value =
@@ -74,12 +84,19 @@ export default function Careers() {
     setError("");
 
     try {
+      if (!form.cv) throw new Error("Please upload your CV.");
+      const uploadData = new FormData();
+      uploadData.append("cv", form.cv);
+      const uploadResponse = await uploadAPI.uploadCv(uploadData);
       await applicationAPI.create({
         name: form.name,
         email: form.email,
         phone: form.phone,
         position: form.position,
-        cv: form.cv?.name || "",
+        cv: uploadResponse?.data?.url || "",
+        cvPublicId: uploadResponse?.data?.publicId || "",
+        cvOriginalName: uploadResponse?.data?.originalName || form.cv.name,
+        cvFormat: uploadResponse?.data?.format || form.cv.name.split(".").pop(),
         coverLetter: form.coverLetter,
       });
       setSubmitted(true);
@@ -126,34 +143,52 @@ export default function Careers() {
             intro="We are seeking disciplined, trustworthy professionals for field and verification operations."
           />
           <div className="mt-8 space-y-px bg-[#EFF6FF]">
-            {POSITIONS.map((p) => (
-              <div
-                key={p.title}
-                className="grid gap-5 bg-white p-6 md:grid-cols-12 md:items-center"
-              >
-                <div className="md:col-span-7">
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <h3 className="font-heading text-lg font-700 uppercase tracking-[0.02em] text-[#123B63]">
-                      {p.title}
-                    </h3>
-                    <span className="border border-[#0066D6] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#0066D6]">
-                      {p.type}
-                    </span>
+            {loadingPositions ? (
+              <p className="bg-white p-6 text-sm text-[#123B63]/60">
+                Loading open roles...
+              </p>
+            ) : positions.length === 0 ? (
+              <p className="bg-white p-6 text-sm text-[#123B63]/60">
+                No open roles are available right now.
+              </p>
+            ) : (
+              positions.map((p) => (
+                <div
+                  key={p._id}
+                  className="grid gap-5 bg-white p-6 md:grid-cols-12 md:items-center"
+                >
+                  <div className="md:col-span-7">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <h3 className="font-heading text-lg font-700 uppercase tracking-[0.02em] text-[#123B63]">
+                        {p.position}
+                      </h3>
+                      <span className="border border-[#0066D6] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#0066D6]">
+                        {p.department || "Full-Time"}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-[#123B63]/70">
+                      {p.description}
+                    </p>
+                    {p.requirements?.length > 0 && (
+                      <ul className="mt-3 list-inside list-disc text-xs text-[#123B63]/60">
+                        {p.requirements.map((requirement) => (
+                          <li key={requirement}>{requirement}</li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
-                  <p className="mt-2 text-sm leading-relaxed text-[#123B63]/70">
-                    {p.desc}
-                  </p>
+                  <div className="md:col-span-5 md:text-right">
+                    <button
+                      type="button"
+                      onClick={() => scrollToApplication(p.position)}
+                      className="btn-outline-obsidian"
+                    >
+                      Apply
+                    </button>
+                  </div>
                 </div>
-                <div className="md:col-span-5 md:text-right">
-                  <a
-                    href={`mailto:${COMPANY.email}`}
-                    className="btn-outline-obsidian"
-                  >
-                    <Mail className="h-4 w-4" /> Apply via Email
-                  </a>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -171,10 +206,10 @@ export default function Careers() {
                 desc: "Include experience, references and contact details.",
               },
               {
-                icon: <Mail className="h-5 w-5" />,
+                icon: <FileText className="h-5 w-5" />,
                 step: "02",
-                title: "Email Us",
-                desc: `Send to ${COMPANY.email} with the role in the subject.`,
+                title: "Submit Application",
+                desc: "Complete the application form with your CV and details.",
               },
               {
                 icon: <Search className="h-5 w-5" />,
@@ -242,7 +277,10 @@ export default function Careers() {
       </section>
 
       {/* Application Form */}
-      <section className="border-t border-[#EFF6FF] bg-[#123B63] py-16 text-white">
+      <section
+        ref={applicationRef}
+        className="border-t border-[#EFF6FF] bg-[#123B63] py-16 text-white"
+      >
         <div className="mx-auto max-w-[1400px] px-4">
           <SectionHeader
             label="Application Form"
@@ -338,9 +376,9 @@ export default function Careers() {
                       className={inputClass}
                     >
                       <option value="">Select a position</option>
-                      {POSITIONS.map((position) => (
-                        <option key={position.title} value={position.title}>
-                          {position.title}
+                      {positions.map((position) => (
+                        <option key={position._id} value={position.position}>
+                          {position.position}
                         </option>
                       ))}
                     </select>

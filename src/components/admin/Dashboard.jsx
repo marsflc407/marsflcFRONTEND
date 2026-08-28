@@ -2,6 +2,7 @@ import React, { createElement, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   BriefcaseBusiness,
+  CalendarDays,
   Building2,
   Contact,
   FileText,
@@ -37,6 +38,7 @@ const NAV_ITEMS = [
     icon: Building2,
   },
   { label: "Applications", to: "/admin/applications", icon: Users },
+  { label: "We Are Hiring", to: "/admin/careers", icon: CalendarDays },
 ];
 
 const STAT_CONFIG = [

@@ -32,6 +32,7 @@ import ApplicationManager from "@/components/admin/ApplicationManager";
 import HomeManager from "@/components/admin/HomeManager";
 import HeroSlideManager from "@/components/admin/HeroSlideManager";
 import ContactSettingsManager from "@/components/admin/ContactSettingsManager";
+import CareerManager from "@/components/admin/CareerManager";
 
 function PublicLayout() {
   return (
@@ -87,6 +88,7 @@ function App() {
               element={<PartnerCompanyManager />}
             />
             <Route path="applications" element={<ApplicationManager />} />
+            <Route path="careers" element={<CareerManager />} />
           </Route>
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />

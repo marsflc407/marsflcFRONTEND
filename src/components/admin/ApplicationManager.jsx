@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Eye,
-  FileText,
+  Download,
   LoaderCircle,
   Mail,
   Phone,
@@ -113,6 +113,25 @@ export default function ApplicationManager() {
     }
   };
 
+  const handleDownloadCv = async (application) => {
+    try {
+      const file = await applicationAPI.downloadCv(application._id);
+      const url = URL.createObjectURL(file);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${application.name || "applicant"}-cv`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (downloadError) {
+      setError(
+        getErrorMessage(
+          downloadError,
+          "Unable to download CV. Use Open CV instead.",
+        ),
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#EFF6FF] px-5 py-8 md:px-8">
       <div className="mx-auto max-w-7xl">
@@ -219,15 +238,16 @@ export default function ApplicationManager() {
                             <Eye className="h-4 w-4" />
                           </button>
                           {application.cv && (
-                            <a
-                              href={application.cv}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="border border-[#123B63]/15 p-2 hover:border-[#0066D6] hover:text-[#0066D6]"
-                              aria-label={`Download CV for ${application.name}`}
-                            >
-                              <FileText className="h-4 w-4" />
-                            </a>
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleDownloadCv(application)}
+                                className="border border-[#123B63]/15 p-2 hover:border-[#0066D6] hover:text-[#0066D6]"
+                                aria-label={`Download CV for ${application.name}`}
+                              >
+                                <Download className="h-4 w-4" />
+                              </button>
+                            </>
                           )}
                           <button
                             type="button"
@@ -338,14 +358,18 @@ export default function ApplicationManager() {
               </p>
             </div>
             {selectedApplication.cv && (
-              <a
-                href={selectedApplication.cv}
-                target="_blank"
-                rel="noreferrer"
-                className="btn-crimson mt-6 inline-flex"
-              >
-                <FileText className="h-4 w-4" /> Download CV
-              </a>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="#download-cv"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleDownloadCv(selectedApplication);
+                  }}
+                  className="btn-crimson inline-flex"
+                >
+                  <Download className="h-4 w-4" /> Download CV
+                </a>
+              </div>
             )}
           </div>
         </div>

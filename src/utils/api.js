@@ -55,6 +55,7 @@ export const serviceAPI = {
 
 export const uploadAPI = {
   uploadSingle: (formData) => api.post("/upload/single", formData),
+  uploadCv: (formData) => api.post("/upload/cv", formData),
   uploadMultiple: (formData) => api.post("/upload/multiple", formData),
   delete: (id) => api.delete(`/upload/${id}`),
   getAll: () => api.get("/upload"),
@@ -101,6 +102,7 @@ export const contactAPI = {
 
 export const careerAPI = {
   getAll: () => api.get("/career"),
+  getAllAdmin: () => api.get("/career/admin/all"),
   create: (data) => api.post("/career", data),
   update: (id, data) => api.put(`/career/${id}`, data),
   delete: (id) => api.delete(`/career/${id}`),
@@ -110,6 +112,8 @@ export const applicationAPI = {
   create: (data) => api.post("/application", data),
   getAll: () => api.get("/application"),
   getById: (id) => api.get(`/application/${id}`),
+  downloadCv: (id) =>
+    api.get(`/application/${id}/cv`, { responseType: "blob" }),
   updateStatus: (id, data) => api.put(`/application/${id}/status`, data),
   delete: (id) => api.delete(`/application/${id}`),
 };
