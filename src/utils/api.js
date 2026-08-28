@@ -98,6 +98,10 @@ export const contactSettingsAPI = {
 
 export const contactAPI = {
   sendMessage: (data) => api.post("/contact", data),
+  getMessages: () => api.get("/contact-messages"),
+  updateReadStatus: (id, read) =>
+    api.patch(`/contact-messages/${id}/read`, { read }),
+  deleteMessage: (id) => api.delete(`/contact-messages/${id}`),
 };
 
 export const careerAPI = {

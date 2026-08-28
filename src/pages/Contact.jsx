@@ -150,210 +150,68 @@ export default function Contact() {
         <div className="mx-auto max-w-[1400px] px-4">
           <div className="grid gap-16 lg:grid-cols-12">
             {/* Contact info */}
-            <div className="lg:col-span-5">
-              <SectionHeader
-                label={settings.informationLabel}
-                title={settings.informationTitle}
-              />
-              <div className="mt-10 space-y-px bg-[#EFF6FF]">
-                {[
-                  {
-                    icon: <MapPin className="h-5 w-5" />,
-                    label: settings.addressLabel,
-                    value: settings.address,
-                  },
-                  {
-                    icon: <Phone className="h-5 w-5" />,
-                    label: settings.phoneLabel,
-                    value: settings.phone,
-                    href: `tel:${settings.phone}`,
-                  },
-                ].map((c) => (
-                  <div
-                    key={c.label}
-                    className="flex items-start gap-4 bg-white p-6"
-                  >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#123B63] text-[#0066D6]">
-                      {c.icon}
-                    </div>
-                    <div>
-                      <div className="font-mono text-xs uppercase tracking-[0.2em] text-[#123B63]/50">
-                        {c.label}
-                      </div>
-                      {c.href ? (
-                        <a
-                          href={c.href}
-                          className="font-mono text-base text-[#123B63] transition-colors hover:text-[#0066D6]"
-                        >
-                          {c.value}
-                        </a>
-                      ) : (
-                        <div className="font-body text-base text-[#123B63]">
-                          {c.value}
-                        </div>
-                      )}
-                    </div>
+            <div className="lg:col-span-12">
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                {/* Address */}
+                <div className="border border-[#EFF6FF] bg-white p-8 transition-shadow hover:shadow-lg">
+                  <div className="flex h-12 w-12 items-center justify-center bg-[#123B63] text-[#0066D6]">
+                    <MapPin className="h-6 w-6" />
                   </div>
-                ))}
-              </div>
+                  <div className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-[#123B63]/50">
+                    {settings.addressLabel}
+                  </div>
+                  <div className="mt-2 font-body text-base text-[#123B63]">
+                    {settings.address}
+                  </div>
+                </div>
 
-              <div className="mt-8 space-y-3">
-                {[{ label: settings.emailLabel, value: settings.email }].map(
-                  (em) => (
-                    <div
-                      key={em.value}
-                      className="flex items-center justify-between border-l-2 border-[#0066D6] bg-[#EFF6FF] px-4 py-3"
-                    >
-                      <div>
-                        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#123B63]/50">
-                          {em.label}
-                        </div>
-                        <a
-                          href={`mailto:${em.value}`}
-                          className="font-mono text-sm text-[#123B63] transition-colors hover:text-[#0066D6]"
-                        >
-                          {em.value}
-                        </a>
-                      </div>
-                      <Mail className="h-4 w-4 text-[#123B63]/40" />
-                    </div>
-                  ),
-                )}
-              </div>
+                {/* Phone */}
+                <div className="border border-[#EFF6FF] bg-white p-8 transition-shadow hover:shadow-lg">
+                  <div className="flex h-12 w-12 items-center justify-center bg-[#123B63] text-[#0066D6]">
+                    <Phone className="h-6 w-6" />
+                  </div>
+                  <div className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-[#123B63]/50">
+                    {settings.phoneLabel}
+                  </div>
+                  <a
+                    href={`tel:${settings.phone}`}
+                    className="mt-2 block font-mono text-base text-[#123B63] transition-colors hover:text-[#0066D6]"
+                  >
+                    {settings.phone}
+                  </a>
+                </div>
 
-              <div className="mt-8 flex items-start gap-4 border border-[#123B63]/10 p-6">
-                <Clock className="mt-0.5 h-5 w-5 shrink-0 text-[#0066D6]" />
-                <div>
-                  <div className="font-heading font-700 text-[#123B63]">
+                {/* Email */}
+                <div className="border border-[#EFF6FF] bg-white p-8 transition-shadow hover:shadow-lg">
+                  <div className="flex h-12 w-12 items-center justify-center bg-[#123B63] text-[#0066D6]">
+                    <Mail className="h-6 w-6" />
+                  </div>
+                  <div className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-[#123B63]/50">
+                    {settings.emailLabel}
+                  </div>
+                  <a
+                    href={`mailto:${settings.email}`}
+                    className="mt-2 block font-mono text-base text-[#123B63] transition-colors hover:text-[#0066D6]"
+                  >
+                    {settings.email}
+                  </a>
+                </div>
+
+                {/* Call Center */}
+                <div className="border border-[#EFF6FF] bg-white p-8 transition-shadow hover:shadow-lg">
+                  <div className="flex h-12 w-12 items-center justify-center bg-[#123B63] text-[#0066D6]">
+                    <Clock className="h-6 w-6" />
+                  </div>
+                  <div className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-[#123B63]/50">
+                    Call Center
+                  </div>
+                  <div className="mt-2 font-body text-sm text-[#123B63]">
                     {settings.callCenterTitle}
                   </div>
-                  <p className="mt-1 text-sm text-[#123B63]/65">
+                  <p className="mt-1 text-xs text-[#123B63]/65">
                     {settings.callCenterDescription}
                   </p>
                 </div>
-              </div>
-            </div>
-
-            {/* Form */}
-            <div className="lg:col-span-7">
-              <div className="border border-[#EFF6FF] bg-white p-8 md:p-10">
-                {submitted ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <CheckCircle2 className="h-16 w-16 text-[#0066D6]" />
-                    <h3 className="mt-6 font-heading text-2xl font-700 text-[#123B63]">
-                      {settings.submittedTitle}
-                    </h3>
-                    <p className="mt-3 max-w-md text-[#123B63]/65">
-                      {settings.submittedMessage} For urgent matters, call our
-                      hotline at {settings.phone}.
-                    </p>
-                    <button
-                      onClick={resetForm}
-                      className="mt-8 btn-outline-obsidian"
-                    >
-                      {settings.anotherMessageLabel}
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <div className="font-mono text-xs uppercase tracking-[0.3em] text-[#0066D6]">
-                      {settings.formLabel}
-                    </div>
-                    <h2 className="mt-2 font-heading text-2xl font-700 text-[#123B63]">
-                      {settings.formTitle}
-                    </h2>
-                    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-                      <div>
-                        <label
-                          htmlFor="name"
-                          className="mb-2 block font-heading text-sm font-600 uppercase tracking-[0.05em] text-[#123B63]"
-                        >
-                          {settings.nameLabel}
-                        </label>
-                        <input
-                          id="name"
-                          type="text"
-                          required
-                          value={form.name}
-                          onChange={update("name")}
-                          className={inputClass}
-                          placeholder="Your full name"
-                        />
-                      </div>
-                      <div className="grid gap-6 sm:grid-cols-2">
-                        <div>
-                          <label
-                            htmlFor="contact"
-                            className="mb-2 block font-heading text-sm font-600 uppercase tracking-[0.05em] text-[#123B63]"
-                          >
-                            {settings.contactLabel}
-                          </label>
-                          <input
-                            id="contact"
-                            type="tel"
-                            required
-                            value={form.contact}
-                            onChange={update("contact")}
-                            className={inputClass}
-                            placeholder="+88 01XXX-XXXXXX"
-                          />
-                        </div>
-                        <div>
-                          <label
-                            htmlFor="email"
-                            className="mb-2 block font-heading text-sm font-600 uppercase tracking-[0.05em] text-[#123B63]"
-                          >
-                            Email
-                          </label>
-                          <input
-                            id="email"
-                            type="email"
-                            required
-                            value={form.email}
-                            onChange={update("email")}
-                            className={inputClass}
-                            placeholder="you@example.com"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="message"
-                          className="mb-2 block font-heading text-sm font-600 uppercase tracking-[0.05em] text-[#123B63]"
-                        >
-                          {settings.messageLabel}
-                        </label>
-                        <textarea
-                          id="message"
-                          required
-                          rows={5}
-                          value={form.message}
-                          onChange={update("message")}
-                          className={inputClass}
-                          placeholder="How can MARS FLC help you?"
-                        />
-                      </div>
-                      {error && (
-                        <p
-                          role="alert"
-                          className="border-l-2 border-[#0066D6] bg-[#0066D6]/10 px-4 py-3 text-sm text-[#0066D6]"
-                        >
-                          {error}
-                        </p>
-                      )}
-                      <button
-                        type="submit"
-                        disabled={submitting}
-                        className="btn-crimson w-full disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-                      >
-                        {submitting
-                          ? settings.sendingLabel
-                          : settings.submitLabel}{" "}
-                        <Send className="h-4 w-4" />
-                      </button>
-                    </form>
-                  </>
-                )}
               </div>
             </div>
           </div>

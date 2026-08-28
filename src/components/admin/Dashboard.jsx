@@ -5,6 +5,7 @@ import {
   CalendarDays,
   Building2,
   Contact,
+  Mail,
   FileText,
   ImagePlus,
   House,
@@ -22,6 +23,7 @@ import {
   sisterConcernAPI,
   applicationAPI,
   partnerCompanyAPI,
+  contactAPI,
 } from "@/utils/api";
 import { useAuth } from "@/context/AuthContext";
 
@@ -29,6 +31,7 @@ const NAV_ITEMS = [
   { label: "Dashboard", to: "/admin/dashboard", icon: LayoutDashboard },
   { label: "Home", to: "/admin/home", icon: House },
   { label: "Contact", to: "/admin/contact", icon: Contact },
+  { label: "Messages", to: "/admin/messages", icon: Mail },
   { label: "Content", to: "/admin/content", icon: FileText },
   { label: "Services", to: "/admin/services", icon: BriefcaseBusiness },
   { label: "Images", to: "/admin/images", icon: ImagePlus },
@@ -47,6 +50,7 @@ const STAT_CONFIG = [
   { key: "sisterConcerns", label: "Sister Concerns", icon: Shield },
   { key: "partnerCompanies", label: "Partner Companies", icon: Building2 },
   { key: "applications", label: "Applications", icon: Users },
+  { key: "messages", label: "Messages", icon: Mail },
 ];
 
 export default function Dashboard() {
@@ -59,6 +63,7 @@ export default function Dashboard() {
     sisterConcerns: 0,
     partnerCompanies: 0,
     applications: 0,
+    messages: 0,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -72,6 +77,7 @@ export default function Dashboard() {
           sisterConcernAPI.getAll(),
           partnerCompanyAPI.getAll(),
           applicationAPI.getAll(),
+          contactAPI.getMessages(),
         ]);
         setStats({
           content: responses[0]?.data?.length || 0,
@@ -79,6 +85,7 @@ export default function Dashboard() {
           sisterConcerns: responses[2]?.data?.length || 0,
           partnerCompanies: responses[3]?.data?.length || 0,
           applications: responses[4]?.data?.length || 0,
+          messages: responses[5]?.data?.length || 0,
         });
       } catch (loadError) {
         setError(
