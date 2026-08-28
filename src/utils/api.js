@@ -29,6 +29,11 @@ export const authAPI = {
   register: (data) => api.post("/auth/register", data),
   login: (data) => api.post("/auth/login", data),
   getMe: () => api.get("/auth/me"),
+  requestPasswordReset: (data) =>
+    api.post("/auth/password-reset/request", data),
+  verifyPasswordResetOtp: (data) =>
+    api.post("/auth/password-reset/verify", data),
+  resetPassword: (data) => api.post("/auth/password-reset/complete", data),
 };
 
 export const contentAPI = {
