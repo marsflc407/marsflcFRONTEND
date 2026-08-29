@@ -1,7 +1,18 @@
-import { useEffect, useState } from "react";
-import { Mail, Phone, ChevronDown, Menu, X } from "lucide-react";
+import { createElement, useEffect, useState } from "react";
+import {
+  BriefcaseBusiness,
+  Building2,
+  ChevronDown,
+  FileSearch,
+  House,
+  Mail,
+  Menu,
+  Phone,
+  Users,
+  X,
+} from "lucide-react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import logo from "@/assets/logo.jpeg";
+import logo from "@/assets/logo.png";
 import { COMPANY } from "@/config/company";
 import PartnerTicker from "@/components/public/PartnerTicker";
 import { footerSettingsAPI } from "@/utils/api";
@@ -14,16 +25,16 @@ const companyLinks = [
 ];
 
 const navigationLinks = [
-  { label: "Home", to: "/" },
-  { label: "Contact Point Verification", to: "/cpv" },
-  { label: "Debt Collection", to: "/debt-collection" },
-  { label: "We're Hiring", to: "/careers" },
-  { label: "Contact", to: "/contact" },
+  { label: "Home", to: "/", icon: House },
+  { label: "CPV", to: "/cpv", icon: FileSearch },
+  { label: "Debt Collection", to: "/debt-collection", icon: BriefcaseBusiness },
+  { label: "We're Hiring", to: "/careers", icon: Users },
+  { label: "Contact", to: "/contact", icon: Phone },
 ];
 
 const linkClassName = ({ isActive }) =>
-  `px-3 py-2 font-heading text-[13px] font-700 uppercase tracking-[0.08em] transition-colors ${
-    isActive ? "text-[#0066D6]" : "text-[#123B63] hover:text-[#0066D6]"
+  `inline-flex items-center gap-1.5 rounded-md px-3 py-2 font-heading text-[13px] font-700 uppercase tracking-[0.08em] transition-all duration-200 hover:-translate-y-px hover:bg-[#EFF6FF] ${
+    isActive ? "font-800 text-[#0066D6]" : "text-[#123B63] hover:text-[#0066D6]"
   }`;
 
 function Header() {
@@ -93,17 +104,6 @@ function Header() {
               >
                 <a
                   className="contact-ticker__item transition-colors hover:text-[#0066D6]"
-                  href={footerSettings.phoneHref}
-                  tabIndex={hidden ? -1 : undefined}
-                >
-                  <Phone
-                    className="h-3.5 w-3.5 text-[#0066D6]"
-                    aria-hidden="true"
-                  />
-                  {footerSettings.phone}
-                </a>
-                <a
-                  className="contact-ticker__item transition-colors hover:text-[#0066D6]"
                   href={`mailto:${footerSettings.email}`}
                   tabIndex={hidden ? -1 : undefined}
                 >
@@ -113,6 +113,18 @@ function Header() {
                   />
                   {footerSettings.email}
                 </a>
+                <a
+                  className="contact-ticker__item transition-colors hover:text-[#0066D6]"
+                  href={footerSettings.phoneHref}
+                  tabIndex={hidden ? -1 : undefined}
+                >
+                  <Phone
+                    className="h-3.5 w-3.5 text-[#0066D6]"
+                    aria-hidden="true"
+                  />
+                  {footerSettings.phone}
+                </a>
+
                 <span className="contact-ticker__item font-mono text-[10px] uppercase tracking-[0.2em] text-white/60">
                   24/7 High Capacity Call Center
                 </span>
@@ -149,6 +161,7 @@ function Header() {
             aria-label="Primary navigation"
           >
             <NavLink end to="/" className={linkClassName}>
+              <House className="h-3.5 w-3.5" aria-hidden="true" />
               Home
             </NavLink>
             <div
@@ -164,6 +177,7 @@ function Header() {
                 onClick={() => setCompanyOpen((open) => !open)}
                 onMouseEnter={() => setCompanyOpen(true)}
               >
+                <Building2 className="h-3.5 w-3.5" aria-hidden="true" />
                 Company Overview
                 <ChevronDown className="h-3.5 w-3.5" />
               </button>
@@ -181,8 +195,12 @@ function Header() {
                 </div>
               )}
             </div>
-            {navigationLinks.slice(1).map((link) => (
+            {navigationLinks.slice(1).map(({ icon: Icon, ...link }) => (
               <NavLink key={link.to} to={link.to} className={linkClassName}>
+                {createElement(Icon, {
+                  className: "h-3.5 w-3.5",
+                  "aria-hidden": true,
+                })}
                 {link.label}
               </NavLink>
             ))}
@@ -232,13 +250,14 @@ function Header() {
                 tabIndex={mobileOpen ? 0 : -1}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `border-b border-white/10 px-1 py-4 font-heading text-sm font-700 uppercase tracking-[0.1em] transition-colors ${
+                  `flex items-center gap-2 rounded-md border-b border-white/10 px-1 py-4 font-heading text-sm font-700 uppercase tracking-[0.1em] transition-all duration-200 hover:bg-white/10 ${
                     isActive
-                      ? "text-[#6EC1FF]"
+                      ? "font-800 text-[#6EC1FF]"
                       : "text-white hover:text-[#6EC1FF]"
                   }`
                 }
               >
+                <House className="h-4 w-4" aria-hidden="true" />
                 Home
               </NavLink>
               <button
@@ -248,6 +267,7 @@ function Header() {
                 onClick={() => setCompanyOpen((open) => !open)}
                 tabIndex={mobileOpen ? 0 : -1}
               >
+                <Building2 className="h-4 w-4" aria-hidden="true" />
                 Company Overview
                 <ChevronDown
                   className={`h-4 w-4 transition-transform ${companyOpen ? "rotate-180" : ""}`}
@@ -268,20 +288,24 @@ function Header() {
                   ))}
                 </div>
               )}
-              {navigationLinks.slice(1).map((link) => (
+              {navigationLinks.slice(1).map(({ icon: Icon, ...link }) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
                   tabIndex={mobileOpen ? 0 : -1}
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
-                    `border-b border-white/10 px-1 py-4 font-heading text-sm font-700 uppercase tracking-[0.1em] transition-colors ${
+                    `flex items-center gap-2 rounded-md border-b border-white/10 px-1 py-4 font-heading text-sm font-700 uppercase tracking-[0.1em] transition-all duration-200 hover:bg-white/10 ${
                       isActive
-                        ? "text-[#6EC1FF]"
+                        ? "font-800 text-[#6EC1FF]"
                         : "text-white hover:text-[#6EC1FF]"
                     }`
                   }
                 >
+                  {createElement(Icon, {
+                    className: "h-4 w-4",
+                    "aria-hidden": true,
+                  })}
                   {link.label}
                 </NavLink>
               ))}

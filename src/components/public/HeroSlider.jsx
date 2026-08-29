@@ -96,7 +96,7 @@ function HeroSlider() {
               fallbackHeroImages[previousSlide % fallbackHeroImages.length]
             }
             alt=""
-            className="hero-image-exit absolute inset-0 h-full w-full object-cover"
+            className="hero-image-exit absolute inset-0 h-full w-full object-contain sm:object-cover"
           />
         )}
         <img
@@ -106,7 +106,7 @@ function HeroSlider() {
             fallbackHeroImages[currentSlide % fallbackHeroImages.length]
           }
           alt=""
-          className="hero-image-enter absolute inset-0 h-full w-full object-cover"
+          className="hero-image-enter absolute inset-0 h-full w-full object-contain sm:object-cover"
         />
       </div>
 
@@ -124,7 +124,7 @@ function HeroSlider() {
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Link
               to="/company-overview"
-              className="border border-white/30 px-5 py-3 font-mono text-xs uppercase tracking-[0.16em] text-white transition-colors hover:border-white hover:bg-white hover:text-[#123B63]"
+              className="border border-white bg-white px-5 py-3 font-mono text-xs uppercase tracking-[0.16em] text-[#123B63] rounded-lg transition-colors hover:border-[#0066D6] hover:bg-[#0066D6] hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 active:bg-[#0052AD] active:text-white"
             >
               Discover MARS FLC
             </Link>

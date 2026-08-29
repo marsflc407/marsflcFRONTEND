@@ -16,7 +16,7 @@ function ServiceCard({ icon, title, description, link }) {
       </p>
       <Link
         to={link}
-        className="mt-8 inline-flex items-center gap-2 font-heading text-sm font-600 uppercase tracking-[0.1em] text-[#0066D6] transition-colors hover:text-[#123B63]"
+        className="mt-8 inline-flex items-center gap-2 rounded-md border border-[#27578d] bg-[#27578d] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white transition-colors hover:border-[#1f4775] hover:bg-[#1f4775]"
       >
         Know More
         <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />

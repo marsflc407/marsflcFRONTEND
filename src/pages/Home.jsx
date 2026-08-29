@@ -46,8 +46,11 @@ function Welcome() {
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/company-overview" className="btn-outline-obsidian">
-                About MARS FLC <ArrowRight className="h-4 w-4" />
+              <Link
+                to="/company-overview"
+                className="border border-[#27578d] bg-[#27578d] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white rounded-md transition-colors hover:bg-[#1f4775] hover:border-[#1f4775]"
+              >
+                About MARS FLC
               </Link>
             </div>
           </div>

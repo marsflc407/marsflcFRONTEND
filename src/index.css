@@ -76,6 +76,21 @@ body {
   }
 }
 
+@keyframes footer-building-pulse {
+  0%,
+  100% {
+    transform: scaleY(0.78);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.footer-building {
+  transform-origin: bottom;
+  animation: footer-building-pulse 2s ease-in-out infinite;
+}
+
 .contact-ticker__viewport {
   width: 100%;
   overflow: hidden;
@@ -206,6 +221,10 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .footer-building {
+    animation: none;
+  }
+
   .partner-ticker__track {
     animation: none;
   }

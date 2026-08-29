@@ -1,7 +1,7 @@
 import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "@/assets/logo.jpeg";
+import logo from "@/assets/logo.png";
 import { COMPANY } from "@/config/company";
 import { footerSettingsAPI } from "@/utils/api";
 
@@ -74,22 +74,24 @@ function Footer() {
     <footer className="relative overflow-hidden bg-[#123B63] text-white">
       <div className="mx-auto max-w-[1400px] px-4 py-16">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+          {/* Brand Section */}
           <section>
             <div className="mb-4 flex items-center gap-3">
               <img
                 src={logo}
                 alt="Mars Financial & Legal Consultancy (MARS FLC)"
-                className="h-11 w-11 object-contain"
+                className="h-11 w-11 object-contain transition-all duration-300 hover:scale-110 hover:rotate-3"
               />
-              <div className="font-heading text-sm font-700 uppercase tracking-[0.15em]">
+              <div className="font-heading text-sm font-700 uppercase tracking-[0.15em] transition-all duration-300 hover:text-[#0066D6]">
                 {settings.brandName}
               </div>
             </div>
-            <p className="max-w-sm text-sm leading-relaxed text-white/60">
+            <p className="max-w-sm text-sm leading-relaxed text-white/60 transition-all duration-300 hover:text-white/80">
               {settings.description}
             </p>
           </section>
 
+          {/* Quick Links Section */}
           <section>
             <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-[#0066D6]">
               Quick Links
@@ -102,14 +104,14 @@ function Footer() {
                       href={link.to}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="transition-colors hover:text-white"
+                      className="inline-block transition-all duration-300 hover:text-white hover:translate-x-2"
                     >
                       {link.label}
                     </a>
                   ) : (
                     <Link
                       to={link.to || "/"}
-                      className="transition-colors hover:text-white"
+                      className="inline-block transition-all duration-300 hover:text-white hover:translate-x-2"
                     >
                       {link.label}
                     </Link>
@@ -125,10 +127,10 @@ function Footer() {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 transition-colors hover:text-white"
+                    className="inline-flex items-center gap-2 transition-all duration-300 hover:text-white hover:scale-105"
                   >
                     <ExternalLink
-                      className="h-4 w-4 text-[#0066D6]"
+                      className="h-4 w-4 text-[#0066D6] transition-all duration-300 group-hover:rotate-12"
                       aria-hidden="true"
                     />
                     {social.platform}
@@ -138,29 +140,30 @@ function Footer() {
             )}
           </section>
 
+          {/* Contact Section */}
           <section>
             <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-[#0066D6]">
               {settings.officeTitle}
             </h2>
             <ul className="space-y-3 text-sm text-white/70">
-              <li className="flex gap-2">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#0066D6]" />
+              <li className="flex gap-2 transition-all duration-300 hover:text-white/90">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#0066D6] transition-all duration-300 group-hover:scale-110" />
                 <span>{settings.address}</span>
               </li>
-              <li className="flex gap-2">
-                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#0066D6]" />
+              <li className="flex gap-2 transition-all duration-300 hover:text-white/90">
+                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#0066D6] transition-all duration-300 group-hover:scale-110" />
                 <a
                   href={settings.phoneHref}
-                  className="font-mono transition-colors hover:text-white"
+                  className="font-mono transition-all duration-300 hover:text-white hover:scale-105 inline-block"
                 >
                   {settings.phone}
                 </a>
               </li>
-              <li className="flex gap-2">
-                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#0066D6]" />
+              <li className="flex gap-2 transition-all duration-300 hover:text-white/90">
+                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#0066D6] transition-all duration-300 group-hover:scale-110" />
                 <a
                   href={`mailto:${settings.email}`}
-                  className="font-mono transition-colors hover:text-white"
+                  className="font-mono transition-all duration-300 hover:text-white hover:scale-105 inline-block"
                 >
                   {settings.email}
                 </a>
@@ -168,6 +171,7 @@ function Footer() {
             </ul>
           </section>
 
+          {/* Hours Section */}
           <section>
             <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-[#0066D6]">
               {settings.hoursTitle}
@@ -176,9 +180,11 @@ function Footer() {
               {settings.hours.map((item, index) => (
                 <div
                   key={`${item.title}-${index}`}
-                  className={`border-l-2 ${index === 0 ? "border-[#0066D6]" : "border-white/30"} pl-3`}
+                  className={`border-l-2 ${
+                    index === 0 ? "border-[#0066D6]" : "border-white/30"
+                  } pl-3 transition-all duration-300 hover:border-[#0066D6] hover:pl-4 hover:bg-white/5 hover:rounded-r hover:py-1`}
                 >
-                  <div className="font-heading font-600 text-white">
+                  <div className="font-heading font-600 text-white transition-all duration-300 group-hover:text-[#0066D6]">
                     {item.title}
                   </div>
                   <div className="font-mono text-xs">{item.value}</div>
@@ -188,6 +194,7 @@ function Footer() {
           </section>
         </div>
 
+        {/* City Skyline */}
         <div className="relative mt-14 h-24 border-b border-white/10">
           <div
             className="absolute inset-x-0 bottom-0 flex items-end justify-center gap-2 opacity-30"
@@ -196,19 +203,24 @@ function Footer() {
             {buildings.map((height, index) => (
               <span
                 key={`${height}-${index}`}
-                className={`${height} bg-[#0066D6]`}
+                className={`footer-building ${height} bg-[#0066D6] transition-all duration-300 hover:bg-[#0088FF] hover:scale-y-110 hover:opacity-80`}
+                style={{
+                  animationDelay: `${index * 120}ms`,
+                  animationDuration: `${1800 + (index % 4) * 180}ms`,
+                }}
               />
             ))}
           </div>
           <div className="absolute inset-x-0 bottom-0 h-px bg-[#0066D6]" />
         </div>
 
+        {/* Copyright Section */}
         <div className="mt-6 flex flex-col items-center justify-between gap-4 text-xs text-white/40 sm:flex-row">
           <Link
             to="/admin/dashboard"
             target="_blank"
             rel="noopener noreferrer"
-            className="transition-colors hover:text-white"
+            className="transition-all duration-300 hover:text-white hover:scale-105 inline-block"
             aria-label="Open MARS FLC admin dashboard"
           >
             Copyright {new Date().getFullYear()} {settings.copyrightText}
@@ -218,7 +230,7 @@ function Footer() {
               href={settings.websiteHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono uppercase tracking-[0.2em] hover:text-white"
+              className="font-mono uppercase tracking-[0.2em] transition-all duration-300 hover:text-white hover:scale-105"
             >
               {settings.website}
             </a>
@@ -229,7 +241,7 @@ function Footer() {
               href="https://www.linkedin.com/in/fahim-bafu/"
               target="_blank"
               rel="noopener noreferrer"
-              className="transition-colors hover:text-white"
+              className="transition-all duration-300 hover:text-white hover:scale-105 inline-block"
             >
               Developed By Bafu
             </a>

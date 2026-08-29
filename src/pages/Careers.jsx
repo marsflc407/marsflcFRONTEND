@@ -31,6 +31,9 @@ const BG_CHECK = [
   },
 ];
 
+const APPLICATION_IMAGE =
+  "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1400&q=85";
+
 export default function Careers() {
   const [positions, setPositions] = useState([]);
   const [loadingPositions, setLoadingPositions] = useState(true);
@@ -124,7 +127,7 @@ export default function Careers() {
   };
 
   const inputClass =
-    "w-full border border-[#123B63]/15 bg-white px-4 py-2.5 font-body text-base text-[#123B63] transition-colors focus:border-[#0066D6] focus:outline-none focus:ring-2 focus:ring-[#0066D6]/20";
+    "w-full rounded-md border border-[#123B63]/15 bg-white px-4 py-2.5 font-body text-base text-[#123B63] transition-colors focus:border-[#0066D6] focus:outline-none focus:ring-2 focus:ring-[#0066D6]/20";
 
   return (
     <>
@@ -181,7 +184,7 @@ export default function Careers() {
                     <button
                       type="button"
                       onClick={() => scrollToApplication(p.position)}
-                      className="btn-outline-obsidian"
+                      className="border border-[#27578d] bg-[#27578d] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white rounded-md transition-colors hover:bg-[#1f4775] hover:border-[#1f4775]"
                     >
                       Apply
                     </button>
@@ -287,154 +290,172 @@ export default function Careers() {
             title={<span className="text-white">Join the MARS FLC Team</span>}
             intro="Submit your details and our recruitment team will review your application."
           />
-          <div className="mt-8 max-w-4xl bg-white p-6 text-[#123B63] md:p-8">
-            {submitted ? (
-              <div className="flex flex-col items-center py-10 text-center">
-                <CheckCircle2 className="h-12 w-12 text-[#0066D6]" />
-                <h3 className="mt-4 font-heading text-xl font-700">
-                  Application Received
-                </h3>
-                <p className="mt-2 text-sm text-[#123B63]/65">
-                  Thank you, {form.name}. Our recruitment team will be in touch.
-                </p>
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="mt-5 btn-outline-obsidian"
-                >
-                  Submit Another Application
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label
-                      htmlFor="application-name"
-                      className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
-                    >
-                      Name
-                    </label>
-                    <input
-                      id="application-name"
-                      type="text"
-                      required
-                      value={form.name}
-                      onChange={update("name")}
-                      className={inputClass}
-                      placeholder="Your full name"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="application-email"
-                      className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
-                    >
-                      Email
-                    </label>
-                    <input
-                      id="application-email"
-                      type="email"
-                      required
-                      value={form.email}
-                      onChange={update("email")}
-                      className={inputClass}
-                      placeholder="you@example.com"
-                    />
-                  </div>
-                </div>
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label
-                      htmlFor="application-phone"
-                      className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
-                    >
-                      Phone
-                    </label>
-                    <input
-                      id="application-phone"
-                      type="tel"
-                      required
-                      value={form.phone}
-                      onChange={update("phone")}
-                      className={inputClass}
-                      placeholder="+88 01XXX-XXXXXX"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="application-position"
-                      className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
-                    >
-                      Position
-                    </label>
-                    <select
-                      id="application-position"
-                      required
-                      value={form.position}
-                      onChange={update("position")}
-                      className={inputClass}
-                    >
-                      <option value="">Select a position</option>
-                      {positions.map((position) => (
-                        <option key={position._id} value={position.position}>
-                          {position.position}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label
-                    htmlFor="application-cv"
-                    className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
-                  >
-                    CV Upload
-                  </label>
-                  <input
-                    id="application-cv"
-                    type="file"
-                    required
-                    accept=".pdf,.doc,.docx"
-                    onChange={update("cv")}
-                    className={`${inputClass} file:mr-4 file:border-0 file:bg-[#123B63] file:px-4 file:py-2 file:text-white file:text-sm`}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="application-cover-letter"
-                    className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
-                  >
-                    Cover Letter
-                  </label>
-                  <textarea
-                    id="application-cover-letter"
-                    required
-                    rows={5}
-                    value={form.coverLetter}
-                    onChange={update("coverLetter")}
-                    className={inputClass}
-                    placeholder="Tell us why you are a strong fit for this role."
-                  />
-                </div>
-                {error && (
-                  <p
-                    role="alert"
-                    className="border-l-2 border-[#0066D6] bg-[#0066D6]/10 px-4 py-2 text-sm text-[#0066D6]"
-                  >
-                    {error}
+          <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:items-stretch">
+            <div className="rounded-lg bg-white p-6 text-[#123B63] shadow-xl md:p-8 lg:col-span-7">
+              {submitted ? (
+                <div className="flex h-full flex-col items-center justify-center py-10 text-center">
+                  <CheckCircle2 className="h-12 w-12 text-[#0066D6]" />
+                  <h3 className="mt-4 font-heading text-xl font-700">
+                    Application Received
+                  </h3>
+                  <p className="mt-2 text-sm text-[#123B63]/65">
+                    Thank you, {form.name}. Our recruitment team will be in
+                    touch.
                   </p>
-                )}
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="btn-crimson disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {submitting ? "Submitting..." : "Submit Application"}{" "}
-                  <Send className="h-4 w-4" />
-                </button>
-              </form>
-            )}
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="mt-5 rounded-md btn-outline-obsidian"
+                  >
+                    Submit Another Application
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor="application-name"
+                        className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
+                      >
+                        Name
+                      </label>
+                      <input
+                        id="application-name"
+                        type="text"
+                        required
+                        value={form.name}
+                        onChange={update("name")}
+                        className={inputClass}
+                        placeholder="Your full name"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="application-email"
+                        className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
+                      >
+                        Email
+                      </label>
+                      <input
+                        id="application-email"
+                        type="email"
+                        required
+                        value={form.email}
+                        onChange={update("email")}
+                        className={inputClass}
+                        placeholder="you@example.com"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor="application-phone"
+                        className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
+                      >
+                        Phone
+                      </label>
+                      <input
+                        id="application-phone"
+                        type="tel"
+                        required
+                        value={form.phone}
+                        onChange={update("phone")}
+                        className={inputClass}
+                        placeholder="+88 01XXX-XXXXXX"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="application-position"
+                        className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
+                      >
+                        Position
+                      </label>
+                      <select
+                        id="application-position"
+                        required
+                        value={form.position}
+                        onChange={update("position")}
+                        className={inputClass}
+                      >
+                        <option value="">Select a position</option>
+                        {positions.map((position) => (
+                          <option key={position._id} value={position.position}>
+                            {position.position}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="application-cv"
+                      className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
+                    >
+                      CV Upload
+                    </label>
+                    <input
+                      id="application-cv"
+                      type="file"
+                      required
+                      accept=".pdf,.doc,.docx"
+                      onChange={update("cv")}
+                      className={`${inputClass} file:mr-4 file:rounded file:border-0 file:bg-[#123B63] file:px-4 file:py-2 file:text-white file:text-sm`}
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="application-cover-letter"
+                      className="mb-1.5 block font-heading text-xs font-600 uppercase tracking-[0.05em]"
+                    >
+                      Cover Letter
+                    </label>
+                    <textarea
+                      id="application-cover-letter"
+                      required
+                      rows={5}
+                      value={form.coverLetter}
+                      onChange={update("coverLetter")}
+                      className={inputClass}
+                      placeholder="Tell us why you are a strong fit for this role."
+                    />
+                  </div>
+                  {error && (
+                    <p
+                      role="alert"
+                      className="border-l-2 border-[#0066D6] bg-[#0066D6]/10 px-4 py-2 text-sm text-[#0066D6]"
+                    >
+                      {error}
+                    </p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="rounded-md btn-crimson disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {submitting ? "Submitting..." : "Submit Application"}{" "}
+                    <Send className="h-4 w-4" />
+                  </button>
+                </form>
+              )}
+            </div>
+            <div className="relative hidden min-h-[560px] overflow-hidden rounded-lg lg:col-span-5 lg:block">
+              <img
+                src={APPLICATION_IMAGE}
+                alt="Professionals collaborating during a job application meeting"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-[#123B63]/90 p-7 text-white">
+                <p className="font-mono text-xs uppercase tracking-[0.25em] text-[#6EC1FF]">
+                  Build Your Future
+                </p>
+                <p className="mt-2 font-heading text-xl font-700">
+                  Bring your discipline, skill, and ambition to MARS FLC.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
