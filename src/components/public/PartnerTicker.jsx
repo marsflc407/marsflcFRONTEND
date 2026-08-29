@@ -7,11 +7,20 @@ function PartnerGroup({ partners, hidden = false }) {
     <div className="partner-ticker__group" aria-hidden={hidden}>
       {partners.map((partner) => (
         <div key={partner.name} className="partner-ticker__item">
-          <img
-            src={partner.image || partner.logo}
-            alt={hidden ? "" : `${partner.name} logo`}
-            className="partner-ticker__logo"
-          />
+          {partner.image ? (
+            <img
+              src={partner.image}
+              alt={hidden ? "" : `${partner.name} logo`}
+              className="partner-ticker__logo"
+            />
+          ) : (
+            <span
+              className="partner-ticker__logo flex items-center justify-center bg-[#123B63] font-heading text-[10px] font-700 uppercase text-white"
+              aria-hidden="true"
+            >
+              {partner.monogram || partner.name.slice(0, 2)}
+            </span>
+          )}
           <span>{partner.name}</span>
         </div>
       ))}

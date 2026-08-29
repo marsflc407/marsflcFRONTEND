@@ -1,42 +1,42 @@
 export const PARTNERS = [
   {
     name: "Google",
-    logo: "https://cdn.simpleicons.org/google",
+    monogram: "G",
   },
   {
     name: "Microsoft",
-    logo: "https://cdn.simpleicons.org/microsoft",
+    monogram: "M",
   },
   {
     name: "Apple",
-    logo: "https://cdn.simpleicons.org/apple",
+    monogram: "A",
   },
   {
     name: "Amazon",
-    logo: "https://cdn.simpleicons.org/amazon",
+    monogram: "a",
   },
   {
     name: "LinkedIn",
-    logo: "https://cdn.simpleicons.org/linkedin",
+    monogram: "in",
   },
   {
     name: "Facebook",
-    logo: "https://cdn.simpleicons.org/facebook",
+    monogram: "f",
   },
   {
     name: "YouTube",
-    logo: "https://cdn.simpleicons.org/youtube",
+    monogram: "YT",
   },
   {
     name: "GitHub",
-    logo: "https://cdn.simpleicons.org/github",
+    monogram: "GH",
   },
   {
     name: "Slack",
-    logo: "https://cdn.simpleicons.org/slack",
+    monogram: "S",
   },
   {
     name: "Notion",
-    logo: "https://cdn.simpleicons.org/notion",
+    monogram: "N",
   },
 ];
