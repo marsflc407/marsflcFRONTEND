@@ -206,6 +206,8 @@ function Footer() {
         <div className="mt-6 flex flex-col items-center justify-between gap-4 text-xs text-white/40 sm:flex-row">
           <Link
             to="/admin/dashboard"
+            target="_blank"
+            rel="noopener noreferrer"
             className="transition-colors hover:text-white"
             aria-label="Open MARS FLC admin dashboard"
           >

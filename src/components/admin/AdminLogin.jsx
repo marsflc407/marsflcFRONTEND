@@ -3,9 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   ArrowRight,
+  ExternalLink,
   KeyRound,
   LockKeyhole,
-  Mail,
 } from "lucide-react";
 import Button from "@/components/common/Button";
 import FormInput from "@/components/common/FormInput";
@@ -291,9 +291,12 @@ export default function AdminLogin() {
 
         <Link
           to="/"
-          className="mt-8 inline-flex items-center gap-2 text-sm text-[#123B63]/60 transition-colors hover:text-[#0066D6]"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-8 inline-flex w-full items-center justify-center gap-2 border border-[#0066D6] px-4 py-3 text-sm font-600 text-[#0066D6] transition-colors hover:bg-[#0066D6] hover:text-white"
         >
-          <Mail className="h-4 w-4" aria-hidden="true" /> Return to public site
+          <ExternalLink className="h-4 w-4" aria-hidden="true" />
+          Go to public site
         </Link>
       </div>
     </main>

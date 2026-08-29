@@ -107,20 +107,16 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    const messageData = {
+      name: form.name,
+      phone: form.contact,
+      email: form.email,
+      message: form.message,
+    };
 
-    try {
-      await contactAPI.sendMessage({
-        name: form.name,
-        phone: form.contact,
-        email: form.email,
-        message: form.message,
-      });
-      setSubmitted(true);
-    } catch {
-      setSubmitted(true);
-    } finally {
-      setSubmitting(false);
-    }
+    setSubmitted(true);
+    setSubmitting(false);
+    contactAPI.sendMessage(messageData).catch(() => {});
   };
 
   const resetForm = () => {

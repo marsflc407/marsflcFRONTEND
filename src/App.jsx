@@ -37,6 +37,7 @@ import DebtCollectionManager from "@/components/admin/DebtCollectionManager";
 import CompanyOverviewManager from "@/components/admin/CompanyOverviewManager";
 import CareerManager from "@/components/admin/CareerManager";
 import MessageManager from "@/components/admin/MessageManager";
+import AdminLayout from "@/components/admin/AdminLayout";
 
 function PublicLayout() {
   return (
@@ -78,28 +79,36 @@ function App() {
           />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/*" element={<ProtectedRoute />}>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="home" element={<HomeManager />} />
-            <Route path="hero-slides" element={<HeroSlideManager />} />
-            <Route path="contact" element={<ContactSettingsManager />} />
-            <Route path="footer" element={<FooterManager />} />
-            <Route path="debt-collection" element={<DebtCollectionManager />} />
-            <Route
-              path="company-overview"
-              element={<CompanyOverviewManager />}
-            />
-            <Route path="content" element={<ContentManager />} />
-            <Route path="services" element={<ServiceManager />} />
-            <Route path="images" element={<ImageManager />} />
-            <Route path="sister-concerns" element={<SisterConcernManager />} />
-            <Route
-              path="partner-companies"
-              element={<PartnerCompanyManager />}
-            />
-            <Route path="applications" element={<ApplicationManager />} />
-            <Route path="careers" element={<CareerManager />} />
-            <Route path="messages" element={<MessageManager />} />
+            <Route element={<AdminLayout />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="home" element={<HomeManager />} />
+              <Route path="hero-slides" element={<HeroSlideManager />} />
+              <Route path="contact" element={<ContactSettingsManager />} />
+              <Route path="footer" element={<FooterManager />} />
+              <Route
+                path="debt-collection"
+                element={<DebtCollectionManager />}
+              />
+              <Route
+                path="company-overview"
+                element={<CompanyOverviewManager />}
+              />
+              <Route path="content" element={<ContentManager />} />
+              <Route path="services" element={<ServiceManager />} />
+              <Route path="images" element={<ImageManager />} />
+              <Route
+                path="sister-concerns"
+                element={<SisterConcernManager />}
+              />
+              <Route
+                path="partner-companies"
+                element={<PartnerCompanyManager />}
+              />
+              <Route path="applications" element={<ApplicationManager />} />
+              <Route path="careers" element={<CareerManager />} />
+              <Route path="messages" element={<MessageManager />} />
+            </Route>
           </Route>
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />

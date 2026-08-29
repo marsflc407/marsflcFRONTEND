@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Check, LoaderCircle, Mail, Trash2 } from "lucide-react";
+import { LoaderCircle, Mail, Trash2 } from "lucide-react";
 import { contactAPI } from "@/utils/api";
 import AdminPagination, {
   useAdminPagination,
@@ -23,7 +23,13 @@ export default function MessageManager() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const { page, pageCount, setPage, pageItems } = useAdminPagination(messages);
+  const sortedMessages = [...messages].sort((first, second) => {
+    if (first.read !== second.read)
+      return Number(first.read) - Number(second.read);
+    return new Date(second.createdAt) - new Date(first.createdAt);
+  });
+  const { page, pageCount, setPage, pageItems } =
+    useAdminPagination(sortedMessages);
 
   useEffect(() => {
     contactAPI
@@ -94,7 +100,11 @@ export default function MessageManager() {
     const body = encodeURIComponent(
       `Hello ${message.name},\n\n\n\nRegards,\nMARS FLC`,
     );
-    window.location.href = `mailto:${message.email}?subject=${subject}&body=${body}`;
+    window.open(
+      `mailto:${message.email}?subject=${subject}&body=${body}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
   };
 
   return (
@@ -197,7 +207,7 @@ export default function MessageManager() {
                             type="button"
                             onClick={() => handleReadStatus(message)}
                             disabled={updatingId === message._id}
-                            className="border border-[#123B63]/15 p-2 hover:border-[#0066D6] hover:text-[#0066D6] disabled:opacity-50"
+                            className="border border-[#123B63]/15 px-3 py-2 text-xs font-600 hover:border-[#0066D6] hover:text-[#0066D6] disabled:opacity-50"
                             aria-label={
                               message.read
                                 ? `Mark ${message.name} as unread`
@@ -209,8 +219,10 @@ export default function MessageManager() {
                           >
                             {updatingId === message._id ? (
                               <LoaderCircle className="h-4 w-4 animate-spin" />
+                            ) : message.read ? (
+                              "Mark as unread"
                             ) : (
-                              <Check className="h-4 w-4" />
+                              "Mark as read"
                             )}
                           </button>
                           <button
