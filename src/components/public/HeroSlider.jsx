@@ -96,7 +96,7 @@ function HeroSlider() {
               fallbackHeroImages[previousSlide % fallbackHeroImages.length]
             }
             alt=""
-            className="hero-image-exit absolute inset-0 h-full w-full object-contain sm:object-cover"
+            className="hero-image-exit absolute inset-0 h-full w-full object-cover"
           />
         )}
         <img
@@ -106,7 +106,7 @@ function HeroSlider() {
             fallbackHeroImages[currentSlide % fallbackHeroImages.length]
           }
           alt=""
-          className="hero-image-enter absolute inset-0 h-full w-full object-contain sm:object-cover"
+          className="hero-image-enter absolute inset-0 h-full w-full object-cover"
         />
       </div>
 
