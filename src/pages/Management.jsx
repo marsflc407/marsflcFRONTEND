@@ -34,18 +34,24 @@ const team = [
     role: "Managing Director",
     description:
       "Strategic direction, governance, and long-term client relationships.",
+    image:
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=85",
   },
   {
     initials: "HO",
     role: "Head of Operations",
     description:
       "Coordinates field teams, call center performance, and reporting standards.",
+    image:
+      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=85",
   },
   {
     initials: "TL",
     role: "Team Leadership",
     description:
       "Guides recovery squads with practical oversight and disciplined execution.",
+    image:
+      "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=900&q=85",
   },
 ];
 
@@ -202,12 +208,35 @@ export default function Management() {
                 key={member.role}
                 className="border border-[#EFF6FF] bg-white p-6 transition-shadow hover:shadow-xl sm:p-8"
               >
-                <div className="flex aspect-[4/3] items-end justify-between bg-[#123B63] p-6 text-white">
-                  <span className="font-heading text-4xl font-800 text-[#0066D6]">
-                    {member.initials || member.subtitle || "TM"}
-                  </span>
-                  <Users className="h-6 w-6 text-white/40" aria-hidden="true" />
-                </div>
+                {member.image ? (
+                  <div className="relative aspect-[4/3] overflow-hidden bg-[#123B63]">
+                    <img
+                      src={member.image}
+                      alt={`${member.role} at MARS FLC`}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-[#123B63]/85 p-6 text-white">
+                      <span className="font-heading text-4xl font-800 text-[#0066D6]">
+                        {member.initials || member.subtitle || "TM"}
+                      </span>
+                      <Users
+                        className="h-6 w-6 text-white/50"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex h-24 items-center justify-between bg-[#123B63] px-6 text-white">
+                    <span className="font-heading text-3xl font-800 text-[#0066D6]">
+                      {member.initials || member.subtitle || "TM"}
+                    </span>
+                    <Users
+                      className="h-5 w-5 text-white/40"
+                      aria-hidden="true"
+                    />
+                  </div>
+                )}
                 <h2 className="mt-6 font-heading text-lg font-700 uppercase tracking-[0.05em] text-[#123B63]">
                   {member.role}
                 </h2>

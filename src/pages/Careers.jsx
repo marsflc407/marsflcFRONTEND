@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { PageHero, SectionHeader } from "@/components/site/primitives";
+import { SectionHeader, SectionLabel } from "@/components/site/primitives";
 import { applicationAPI, careerAPI, uploadAPI } from "@/utils/api";
+import careerHeroImage from "@/assets/carrerHero.jpeg";
 import {
   ShieldCheck,
   Search,
@@ -33,7 +34,6 @@ const BG_CHECK = [
 
 const APPLICATION_IMAGE =
   "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1400&q=85";
-
 export default function Careers() {
   const [positions, setPositions] = useState([]);
   const [loadingPositions, setLoadingPositions] = useState(true);
@@ -131,11 +131,31 @@ export default function Careers() {
 
   return (
     <>
-      <PageHero
-        label="We're Hiring"
-        title="The Talent Gateway"
-        intro="MARS FLC welcomes professionals interested in legal, financial, recovery, verification, and administrative support work."
-      />
+      <section className="bg-[#123B63] text-white">
+        <div className="mx-auto grid max-w-[1400px] gap-8 px-4 lg:min-h-[520px] lg:grid-cols-12 lg:gap-12">
+          <div className="flex flex-col justify-center py-20 lg:col-span-7 lg:py-24">
+            <SectionLabel>We're Hiring</SectionLabel>
+            <h1 className="mt-5 max-w-3xl font-heading text-4xl font-800 leading-[1.05] sm:text-5xl md:text-6xl">
+              The Talent Gateway
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/75">
+              MARS FLC welcomes professionals interested in legal, financial,
+              recovery, verification, and administrative support work.
+            </p>
+          </div>
+          <div className="flex items-center py-6 lg:col-span-5 lg:py-10">
+            <div className="h-full max-h-[460px] w-full overflow-hidden rounded-xl border border-white/20 shadow-2xl">
+              <img
+                src={careerHeroImage}
+                alt="Professionals collaborating during a job application meeting"
+                className="h-full min-h-[280px] w-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Available Positions */}
       <section className="border-b border-[#EFF6FF] py-16">

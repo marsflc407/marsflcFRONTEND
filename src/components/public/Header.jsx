@@ -147,11 +147,11 @@ function Header() {
               className="h-11 w-11 object-contain"
             />
             <span className="leading-tight">
-              <span className="block font-heading text-sm font-700 uppercase tracking-[0.15em] text-[#123B63]">
-                {COMPANY.name}
+              <span className="blue font-heading text-base font-bolder uppercase tracking-[0.12em] text-[#123B63]">
+                MARS
               </span>
-              <span className="block font-mono text-[10px] uppercase tracking-[0.3em] text-[#0066D6]">
-                The Metric of Certainty
+              <span className="block font-mono text-[9px] uppercase tracking-[0.16em] text-[#0066D6]">
+                Financial &amp; Legal Consultancy
               </span>
             </span>
           </Link>

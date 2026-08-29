@@ -317,14 +317,24 @@ export default function ContentManager() {
                 htmlFor="content-image"
                 className="mb-2 block text-sm font-600"
               >
-                Image URL
+                {form.page === "family" && form.section === "employee"
+                  ? "Employee Photo URL"
+                  : form.page === "family" && form.section === "hero"
+                    ? "Family Hero Background URL"
+                    : "Image URL (optional photo)"}
               </label>
               <input
                 id="content-image"
                 value={form.image}
                 onChange={update("image")}
                 className={inputClass}
-                placeholder="Use an uploaded image URL"
+                placeholder={
+                  form.page === "family" && form.section === "employee"
+                    ? "Add an employee photo URL"
+                    : form.page === "family" && form.section === "hero"
+                      ? "Add a family hero background URL"
+                      : "Use an uploaded image URL"
+                }
               />
             </div>
             <div>

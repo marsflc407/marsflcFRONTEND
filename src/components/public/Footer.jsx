@@ -80,10 +80,15 @@ function Footer() {
               <img
                 src={logo}
                 alt="Mars Financial & Legal Consultancy (MARS FLC)"
-                className="h-11 w-11 object-contain transition-all duration-300 hover:scale-110 hover:rotate-3"
+                className="h-12 w-11 rounded-md object-contain transition-all duration-300 hover:scale-110 hover:rotate-3"
               />
-              <div className="font-heading text-sm font-700 uppercase tracking-[0.15em] transition-all duration-300 hover:text-[#0066D6]">
-                {settings.brandName}
+              <div className="leading-tight transition-all duration-300 hover:text-[#0066D6]">
+                <span className="block font-heading text-base font-800 uppercase tracking-[0.12em]">
+                  MARS
+                </span>
+                <span className="block font-mono text-[9px] uppercase tracking-[0.16em] text-[#6EC1FF]">
+                  Financial &amp; Legal Consultancy
+                </span>
               </div>
             </div>
             <p className="max-w-sm text-sm leading-relaxed text-white/60 transition-all duration-300 hover:text-white/80">
