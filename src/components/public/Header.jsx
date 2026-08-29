@@ -58,8 +58,29 @@ function Header() {
     setCompanyOpen(false);
   }, [location]);
 
+  useEffect(() => {
+    if (!mobileOpen) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setMobileOpen(false);
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobileOpen]);
+
   return (
-    <header className="sticky top-0 z-40 bg-white">
+    <header className="relative sticky top-0 z-40 bg-white">
       <PartnerTicker compact />
       <div className="bg-[#123B63] text-white">
         <div className="contact-ticker__viewport">
@@ -182,45 +203,91 @@ function Header() {
           </button>
         </div>
 
-        {mobileOpen && (
+        <div
+          className={`absolute inset-x-0 top-full z-50 h-[calc(100dvh-100%)] md:hidden ${
+            mobileOpen ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+          aria-hidden={!mobileOpen}
+        >
+          <button
+            type="button"
+            className={`absolute inset-0 bg-[#06182A]/70 transition-opacity duration-300 ${
+              mobileOpen ? "opacity-100" : "opacity-0"
+            }`}
+            aria-label="Close menu"
+            tabIndex={mobileOpen ? 0 : -1}
+            onClick={() => setMobileOpen(false)}
+          />
           <nav
-            className="border-t border-[#EFF6FF] px-4 py-3 md:hidden"
+            className={`absolute right-0 top-0 flex h-full w-[min(86vw,360px)] flex-col overflow-y-auto bg-[#123B63] px-6 pb-8 text-white shadow-2xl transition-transform duration-300 ease-out ${
+              mobileOpen ? "translate-x-0" : "translate-x-full"
+            }`}
             aria-label="Mobile navigation"
+            aria-hidden={!mobileOpen}
           >
-            <NavLink end to="/" className={linkClassName}>
-              Home
-            </NavLink>
-            <button
-              type="button"
-              className="flex w-full items-center justify-between px-3 py-2 text-left font-heading text-[13px] font-700 uppercase tracking-[0.08em] text-[#123B63]"
-              aria-expanded={companyOpen}
-              onClick={() => setCompanyOpen((open) => !open)}
-            >
-              Company Overview
-              <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform ${companyOpen ? "rotate-180" : ""}`}
-              />
-            </button>
-            {companyOpen && (
-              <div className="ml-3 border-l-2 border-[#0066D6] pl-3">
-                {companyLinks.map((link) => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    className="block py-1.5 font-heading text-xs font-700 uppercase tracking-[0.05em] text-[#123B63]/70"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-            {navigationLinks.slice(1).map((link) => (
-              <NavLink key={link.to} to={link.to} className={linkClassName}>
-                {link.label}
+            <div className="flex flex-col gap-1">
+              <NavLink
+                end
+                to="/"
+                tabIndex={mobileOpen ? 0 : -1}
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) =>
+                  `border-b border-white/10 px-1 py-4 font-heading text-sm font-700 uppercase tracking-[0.1em] transition-colors ${
+                    isActive
+                      ? "text-[#6EC1FF]"
+                      : "text-white hover:text-[#6EC1FF]"
+                  }`
+                }
+              >
+                Home
               </NavLink>
-            ))}
+              <button
+                type="button"
+                className="flex w-full items-center justify-between border-b border-white/10 px-1 py-4 text-left font-heading text-sm font-700 uppercase tracking-[0.1em] text-white transition-colors hover:text-[#6EC1FF]"
+                aria-expanded={companyOpen}
+                onClick={() => setCompanyOpen((open) => !open)}
+                tabIndex={mobileOpen ? 0 : -1}
+              >
+                Company Overview
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${companyOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+              {companyOpen && (
+                <div className="ml-2 border-l-2 border-[#6EC1FF] pl-4">
+                  {companyLinks.map((link) => (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      tabIndex={mobileOpen ? 0 : -1}
+                      onClick={() => setMobileOpen(false)}
+                      className="block py-3 font-heading text-xs font-700 uppercase tracking-[0.06em] text-white/75 transition-colors hover:text-[#6EC1FF]"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+              {navigationLinks.slice(1).map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  tabIndex={mobileOpen ? 0 : -1}
+                  onClick={() => setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    `border-b border-white/10 px-1 py-4 font-heading text-sm font-700 uppercase tracking-[0.1em] transition-colors ${
+                      isActive
+                        ? "text-[#6EC1FF]"
+                        : "text-white hover:text-[#6EC1FF]"
+                    }`
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+            </div>
           </nav>
-        )}
+        </div>
       </div>
     </header>
   );
