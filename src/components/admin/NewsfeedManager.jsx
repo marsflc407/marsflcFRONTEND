@@ -14,6 +14,7 @@ import AdminPagination, {
 } from "@/components/admin/AdminPagination";
 
 const getInitialForm = () => ({
+  title: "",
   caption: "",
   image: "",
   imagePublicId: "",
@@ -82,6 +83,7 @@ export default function NewsfeedManager() {
   const startEdit = (newsfeed) => {
     setEditingId(newsfeed._id);
     setForm({
+      title: newsfeed.title || "",
       caption: newsfeed.content || newsfeed.title || "",
       image: newsfeed.image || "",
       imagePublicId: newsfeed.imagePublicId || "",
@@ -111,7 +113,7 @@ export default function NewsfeedManager() {
       if (form.file) {
         const uploadData = new FormData();
         uploadData.append("image", form.file);
-        uploadData.append("title", "Newsfeed image");
+        uploadData.append("title", form.title.trim());
         uploadData.append("section", "other");
         const uploadResponse = await uploadAPI.uploadSingle(uploadData);
         image = uploadResponse?.data?.url || image;
@@ -119,6 +121,7 @@ export default function NewsfeedManager() {
       }
 
       const payload = {
+        title: form.title.trim(),
         caption: form.caption.trim(),
         image,
         imagePublicId,
@@ -212,6 +215,16 @@ export default function NewsfeedManager() {
             onSubmit={handleSubmit}
             className="mt-6 grid gap-5 md:grid-cols-2"
           >
+            <label className="text-sm font-600 md:col-span-2">
+              Title
+              <input
+                required
+                value={form.title}
+                onChange={update("title")}
+                className={`${inputClass} mt-2`}
+                placeholder="Write a title for this update"
+              />
+            </label>
             <label className="text-sm font-600 md:col-span-2">
               Caption
               <input

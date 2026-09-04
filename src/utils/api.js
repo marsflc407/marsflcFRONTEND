@@ -94,12 +94,80 @@ export const sisterConcernAPI = {
 };
 
 export const newsfeedAPI = {
-  getAll: () => api.get("/newsfeed"),
-  getAllAdmin: () => api.get("/newsfeed/admin/all"),
-  getById: (id) => api.get(`/newsfeed/${id}`),
-  create: (data) => api.post("/newsfeed", data),
-  update: (id, data) => api.put(`/newsfeed/${id}`, data),
-  delete: (id) => api.delete(`/newsfeed/${id}`),
+  getAll: () =>
+    api.get("/newsfeed").catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.get("/content/home").then((response) => ({
+        ...response,
+        data: (response?.data || [])
+          .filter((item) => item.section === "newsfeed")
+          .map((item) => ({
+            ...item,
+            content: item.content || "",
+            author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
+            date: item.createdAt,
+          })),
+      }));
+    }),
+  getAllAdmin: () =>
+    api.get("/newsfeed/admin/all").catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.get("/content/home").then((response) => ({
+        ...response,
+        data: (response?.data || [])
+          .filter((item) => item.section === "newsfeed")
+          .map((item) => ({
+            ...item,
+            content: item.content || "",
+            author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
+            date: item.createdAt,
+          })),
+      }));
+    }),
+  getById: (id) =>
+    api.get(`/newsfeed/${id}`).catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.get(`/content/home/${id}`).then((response) => ({
+        ...response,
+        data: {
+          ...response.data,
+          content: response.data?.content || "",
+          author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
+          date: response.data?.createdAt,
+        },
+      }));
+    }),
+  create: (data) =>
+    api.post("/newsfeed", data).catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.post("/content", {
+        page: "home",
+        section: "newsfeed",
+        title: data.title,
+        content: data.caption || data.content,
+        image: data.image,
+        order: 0,
+        isActive: true,
+      });
+    }),
+  update: (id, data) =>
+    api.put(`/newsfeed/${id}`, data).catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.put(`/content/${id}`, {
+        page: "home",
+        section: "newsfeed",
+        title: data.title,
+        content: data.caption || data.content,
+        image: data.image,
+        order: 0,
+        isActive: true,
+      });
+    }),
+  delete: (id) =>
+    api.delete(`/newsfeed/${id}`).catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.delete(`/content/${id}`);
+    }),
 };
 
 export const partnerCompanyAPI = {
