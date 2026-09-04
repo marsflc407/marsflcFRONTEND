@@ -1,9 +1,12 @@
 import axios from "axios";
 
+const configuredApiUrl = import.meta.env.VITE_API_URL;
+const apiBaseUrl = configuredApiUrl
+  ? `${configuredApiUrl.replace(/\/+$/, "")}${configuredApiUrl.endsWith("/api") ? "" : "/api"}`
+  : "https://marsflcserver.onrender.com/api";
+
 const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL ||
-    "https://marsflcserver.onrender.com/api",
+  baseURL: apiBaseUrl,
 });
 
 api.interceptors.request.use((config) => {
@@ -62,6 +65,15 @@ export const uploadAPI = {
   delete: (id) => api.delete(`/upload/${id}`),
   replace: (id, formData) => api.put(`/upload/${id}`, formData),
   getAll: () => api.get("/upload"),
+  getGalleryImages: () =>
+    api.get("/upload/gallery").catch(() =>
+      api.get("/upload").then((response) => ({
+        ...response,
+        data: (response?.data || []).filter(
+          (image) => !image.category || image.category === "gallery",
+        ),
+      })),
+    ),
 };
 
 export const heroImageAPI = {
@@ -79,6 +91,15 @@ export const sisterConcernAPI = {
   create: (data) => api.post("/sister-concern", data),
   update: (id, data) => api.put(`/sister-concern/${id}`, data),
   delete: (id) => api.delete(`/sister-concern/${id}`),
+};
+
+export const newsfeedAPI = {
+  getAll: () => api.get("/newsfeed"),
+  getAllAdmin: () => api.get("/newsfeed/admin/all"),
+  getById: (id) => api.get(`/newsfeed/${id}`),
+  create: (data) => api.post("/newsfeed", data),
+  update: (id, data) => api.put(`/newsfeed/${id}`, data),
+  delete: (id) => api.delete(`/newsfeed/${id}`),
 };
 
 export const partnerCompanyAPI = {
@@ -120,8 +141,18 @@ export const contactAPI = {
 export const careerAPI = {
   getAll: () => api.get("/career"),
   getAllAdmin: () => api.get("/career/admin/all"),
-  create: (data) => api.post("/career", data),
-  update: (id, data) => api.put(`/career/${id}`, data),
+  create: (data) =>
+    api.post("/career", {
+      ...data,
+      vacancy: data.vacancy,
+      applicationDeadline: data.applicationDeadline,
+    }),
+  update: (id, data) =>
+    api.put(`/career/${id}`, {
+      ...data,
+      vacancy: data.vacancy,
+      applicationDeadline: data.applicationDeadline,
+    }),
   delete: (id) => api.delete(`/career/${id}`),
 };
 

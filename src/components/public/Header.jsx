@@ -7,6 +7,7 @@ import {
   House,
   Mail,
   Menu,
+  Newspaper,
   Phone,
   Users,
   X,
@@ -22,10 +23,12 @@ const companyLinks = [
   { label: "Our Management", to: "/company-overview/management" },
   { label: "Our Family", to: "/company-overview/family" },
   { label: "Sister Concern", to: "/company-overview/sister-concern" },
+  { label: "Gallery", to: "/company-overview/gallery" },
 ];
 
 const navigationLinks = [
   { label: "Home", to: "/", icon: House },
+  { label: "Newsfeed", to: "/newsfeed", icon: Newspaper },
   { label: "CPV", to: "/cpv", icon: FileSearch },
   { label: "Debt Collection", to: "/debt-collection", icon: BriefcaseBusiness },
   { label: "We're Hiring", to: "/careers", icon: Users },
@@ -146,13 +149,8 @@ function Header() {
               alt="Mars Financial & Legal Consultancy (MARS FLC)"
               className="h-11 w-11 object-contain"
             />
-            <span className="leading-tight">
-              <span className="blue font-heading text-base font-bolder uppercase tracking-[0.12em] text-[#123B63]">
-                MARS
-              </span>
-              <span className="block font-mono text-[9px] uppercase tracking-[0.16em] text-[#0066D6]">
-                Financial &amp; Legal Consultancy
-              </span>
+            <span className="max-w-[360px] font-heading text-sm font-900 leading-tight tracking-[0.06em] text-[#123B63] sm:text-base">
+              MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED
             </span>
           </Link>
 

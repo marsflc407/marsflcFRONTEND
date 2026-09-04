@@ -11,6 +11,8 @@ const EMPTY_FORM = {
   description: "",
   requirements: "",
   location: "",
+  vacancy: 1,
+  applicationDeadline: "",
   isActive: true,
 };
 
@@ -61,6 +63,10 @@ export default function CareerManager() {
       description: career.description || "",
       requirements: (career.requirements || []).join("\n"),
       location: career.location || "",
+      vacancy: career.vacancy || 1,
+      applicationDeadline: career.applicationDeadline
+        ? career.applicationDeadline.slice(0, 10)
+        : "",
       isActive: career.isActive ?? true,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -83,6 +89,12 @@ export default function CareerManager() {
         .map((item) => item.trim())
         .filter(Boolean),
     };
+    const deadline = new Date(form.applicationDeadline);
+    if (Number.isNaN(deadline.getTime()) || deadline <= new Date()) {
+      setError("Application deadline must be a future date.");
+      setSaving(false);
+      return;
+    }
 
     try {
       if (editingId) {
@@ -197,6 +209,28 @@ export default function CareerManager() {
                 onChange={update("isActive")}
               />{" "}
               Publish this job post
+            </label>
+            <label className="text-sm font-600">
+              Vacancies
+              <input
+                type="number"
+                min="1"
+                required
+                value={form.vacancy}
+                onChange={update("vacancy")}
+                className={`${inputClass} mt-2`}
+              />
+            </label>
+            <label className="text-sm font-600">
+              Application Deadline
+              <input
+                type="date"
+                required
+                min={new Date().toISOString().slice(0, 10)}
+                value={form.applicationDeadline}
+                onChange={update("applicationDeadline")}
+                className={`${inputClass} mt-2`}
+              />
             </label>
             <label className="text-sm font-600 md:col-span-2">
               Description
