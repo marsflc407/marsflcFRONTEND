@@ -4,7 +4,9 @@ import {
   Edit3,
   FileText,
   ImagePlus,
+  Link2,
   Plus,
+  Search,
   Trash2,
   X,
 } from "lucide-react";
@@ -14,10 +16,13 @@ import AdminPagination, {
 } from "@/components/admin/AdminPagination";
 
 const getInitialForm = () => ({
+  type: "regular",
   title: "",
   caption: "",
   image: "",
   imagePublicId: "",
+  externalUrl: "",
+  sourceName: "",
   file: null,
 });
 
@@ -40,6 +45,7 @@ export default function NewsfeedManager() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [previewing, setPreviewing] = useState(false);
   const { page, pageCount, setPage, pageItems } = useAdminPagination(newsfeeds);
 
   const loadNewsfeeds = async () => {
@@ -83,15 +89,43 @@ export default function NewsfeedManager() {
   const startEdit = (newsfeed) => {
     setEditingId(newsfeed._id);
     setForm({
+      type: newsfeed.type || "regular",
       title: newsfeed.title || "",
       caption: newsfeed.content || newsfeed.title || "",
       image: newsfeed.image || "",
       imagePublicId: newsfeed.imagePublicId || "",
+      externalUrl: newsfeed.externalUrl || "",
+      sourceName: newsfeed.sourceName || "",
       file: null,
     });
     setError("");
     setNotice("");
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const previewExternalLink = async () => {
+    setPreviewing(true);
+    setError("");
+    setNotice("");
+    try {
+      const response = await newsfeedAPI.preview(form.externalUrl.trim());
+      const preview = response?.data;
+      setForm((current) => ({
+        ...current,
+        title: preview?.title || current.title,
+        caption: preview?.description || current.caption,
+        image: preview?.image || current.image,
+        sourceName: preview?.sourceName || current.sourceName,
+        externalUrl: preview?.externalUrl || current.externalUrl,
+      }));
+      setNotice("Preview loaded. Review the details before publishing.");
+    } catch (previewError) {
+      setError(
+        getErrorMessage(previewError, "Unable to fetch that news preview."),
+      );
+    } finally {
+      setPreviewing(false);
+    }
   };
 
   const reset = () => {
@@ -121,10 +155,13 @@ export default function NewsfeedManager() {
       }
 
       const payload = {
+        type: form.type,
         title: form.title.trim(),
         caption: form.caption.trim(),
         image,
         imagePublicId,
+        externalUrl: form.externalUrl.trim(),
+        sourceName: form.sourceName.trim(),
       };
 
       if (editingId) {
@@ -197,7 +234,13 @@ export default function NewsfeedManager() {
             <div className="flex items-center gap-3">
               <FileText className="h-5 w-5 text-[#0066D6]" aria-hidden="true" />
               <h2 className="font-heading text-xl font-700">
-                {editingId ? "Edit Newsfeed" : "Create Newsfeed"}
+                {editingId
+                  ? form.type === "external"
+                    ? "Edit Shared News Link"
+                    : "Edit Newsfeed"
+                  : form.type === "external"
+                    ? "Share News Link"
+                    : "Create Newsfeed"}
               </h2>
             </div>
             {editingId && (
@@ -215,6 +258,53 @@ export default function NewsfeedManager() {
             onSubmit={handleSubmit}
             className="mt-6 grid gap-5 md:grid-cols-2"
           >
+            <div className="flex flex-wrap gap-2 md:col-span-2">
+              {["regular", "external"].map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setForm((current) => ({ ...current, type }))}
+                  className={`inline-flex items-center gap-2 border px-4 py-2 text-sm font-600 ${form.type === type ? "border-[#0066D6] bg-[#0066D6] text-white" : "border-[#123B63]/15 text-[#123B63] hover:border-[#0066D6]"}`}
+                >
+                  {type === "external" ? (
+                    <Link2 className="h-4 w-4" />
+                  ) : (
+                    <FileText className="h-4 w-4" />
+                  )}
+                  {type === "external" ? "Share News Link" : "Regular Newsfeed"}
+                </button>
+              ))}
+            </div>
+            {form.type === "external" && (
+              <div className="md:col-span-2">
+                <label className="text-sm font-600" htmlFor="newsfeed-url">
+                  External news article URL
+                </label>
+                <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+                  <input
+                    id="newsfeed-url"
+                    required
+                    type="url"
+                    value={form.externalUrl}
+                    onChange={update("externalUrl")}
+                    className={inputClass}
+                    placeholder="https://www.example.com/news/article"
+                  />
+                  <button
+                    type="button"
+                    onClick={previewExternalLink}
+                    disabled={previewing || !form.externalUrl.trim()}
+                    className="btn-outline-obsidian shrink-0 disabled:opacity-60"
+                  >
+                    <Search className="h-4 w-4" />
+                    {previewing ? "Fetching..." : "Fetch Preview"}
+                  </button>
+                </div>
+                <p className="mt-2 text-xs text-[#123B63]/55">
+                  Preview metadata is fetched securely by the server.
+                </p>
+              </div>
+            )}
             <label className="text-sm font-600 md:col-span-2">
               Title
               <input
@@ -235,7 +325,18 @@ export default function NewsfeedManager() {
                 placeholder="Write a caption for this update"
               />
             </label>
-            <div>
+            {form.type === "external" && (
+              <label className="text-sm font-600">
+                Source name
+                <input
+                  value={form.sourceName}
+                  onChange={update("sourceName")}
+                  className={`${inputClass} mt-2`}
+                  placeholder="News portal name"
+                />
+              </label>
+            )}
+            <div className={form.type === "external" ? "md:col-span-2" : ""}>
               <label className="text-sm font-600" htmlFor="newsfeed-image">
                 Image (optional)
               </label>
@@ -326,6 +427,12 @@ export default function NewsfeedManager() {
                       </span>
                     </div>
                     <h3 className="mt-3 font-heading text-xl font-700 text-[#123B63]">
+                      {newsfeed.type === "external" && (
+                        <span className="mb-2 inline-flex items-center gap-1 text-[10px] font-600 uppercase tracking-[0.14em] text-[#0066D6]">
+                          <Link2 className="h-3 w-3" />{" "}
+                          {newsfeed.sourceName || "External source"}
+                        </span>
+                      )}
                       {newsfeed.title}
                     </h3>
                     <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-[#123B63]/65">

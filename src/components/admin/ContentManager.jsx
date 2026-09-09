@@ -3,13 +3,14 @@ import { useSearchParams } from "react-router-dom";
 import {
   Edit3,
   FileText,
+  ImagePlus,
   Plus,
   RefreshCw,
   Save,
   Trash2,
   X,
 } from "lucide-react";
-import { contentAPI } from "@/utils/api";
+import { contentAPI, uploadAPI } from "@/utils/api";
 import AdminPagination, {
   useAdminPagination,
 } from "@/components/admin/AdminPagination";
@@ -53,6 +54,7 @@ export default function ContentManager() {
     searchParams.get("page") || "all",
   );
   const [form, setForm] = useState(EMPTY_FORM);
+  const [imageFile, setImageFile] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -107,6 +109,7 @@ export default function ContentManager() {
       ...EMPTY_FORM,
       page: filterPage === "all" ? "home" : filterPage,
     });
+    setImageFile(null);
     setError("");
     setNotice("");
   };
@@ -125,6 +128,7 @@ export default function ContentManager() {
       order: record.order ?? 0,
       isActive: record.isActive ?? true,
     });
+    setImageFile(null);
     setError("");
     setNotice("");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -133,6 +137,20 @@ export default function ContentManager() {
   const cancelEdit = () => {
     setEditingId(null);
     setForm(EMPTY_FORM);
+    setImageFile(null);
+    setError("");
+    setNotice("");
+  };
+
+  const chooseImage = (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Please choose an image file.");
+      return;
+    }
+    setImageFile(file);
     setError("");
     setNotice("");
   };
@@ -143,9 +161,23 @@ export default function ContentManager() {
     setError("");
     setNotice("");
 
-    const payload = { ...form, order: Number(form.order) || 0 };
-
     try {
+      let image = form.image;
+      if (imageFile) {
+        const uploadData = new FormData();
+        uploadData.append("image", imageFile);
+        uploadData.append("section", "company-overview");
+        uploadData.append("category", "gallery");
+        uploadData.append(
+          "title",
+          form.subtitle || form.title || "Family image",
+        );
+        uploadData.append("alt", form.subtitle || form.title || "Family image");
+        const uploadResponse = await uploadAPI.uploadSingle(uploadData);
+        image = uploadResponse?.data?.url || image;
+      }
+
+      const payload = { ...form, image, order: Number(form.order) || 0 };
       if (editingId) {
         await contentAPI.update(editingId, payload);
         setNotice("Content updated successfully.");
@@ -155,6 +187,7 @@ export default function ContentManager() {
       }
       setEditingId(null);
       setForm(EMPTY_FORM);
+      setImageFile(null);
       await loadContent();
     } catch (saveError) {
       setError(getErrorMessage(saveError, "Unable to save content."));
@@ -336,6 +369,25 @@ export default function ContentManager() {
                       : "Use an uploaded image URL"
                 }
               />
+              <label
+                htmlFor="content-image-upload"
+                className="mt-2 flex cursor-pointer items-center gap-2 border border-dashed border-[#123B63]/20 px-3 py-2.5 text-xs font-600 text-[#123B63]/70 hover:border-[#0066D6] hover:text-[#0066D6]"
+              >
+                <ImagePlus className="h-4 w-4" aria-hidden="true" />
+                {imageFile ? imageFile.name : "Upload a replacement photo"}
+              </label>
+              <input
+                id="content-image-upload"
+                type="file"
+                accept="image/*"
+                onChange={chooseImage}
+                className="sr-only"
+              />
+              {form.page === "family" && (
+                <p className="mt-2 text-xs text-[#123B63]/55">
+                  Uploading a file replaces the current image URL when you save.
+                </p>
+              )}
             </div>
             <div>
               <label

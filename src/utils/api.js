@@ -94,6 +94,7 @@ export const sisterConcernAPI = {
 };
 
 export const newsfeedAPI = {
+  preview: (url) => api.post("/newsfeed/preview", { url }),
   getAll: () =>
     api.get("/newsfeed").catch((error) => {
       if (error.response?.status !== 404) throw error;
@@ -103,6 +104,8 @@ export const newsfeedAPI = {
           .filter((item) => item.section === "newsfeed")
           .map((item) => ({
             ...item,
+            externalUrl: item.externalUrl || item.buttonUrl || "",
+            type: item.externalUrl || item.buttonUrl ? "external" : "regular",
             content: item.content || "",
             author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
             date: item.createdAt,
@@ -118,6 +121,8 @@ export const newsfeedAPI = {
           .filter((item) => item.section === "newsfeed")
           .map((item) => ({
             ...item,
+            externalUrl: item.externalUrl || item.buttonUrl || "",
+            type: item.externalUrl || item.buttonUrl ? "external" : "regular",
             content: item.content || "",
             author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
             date: item.createdAt,
@@ -131,6 +136,12 @@ export const newsfeedAPI = {
         ...response,
         data: {
           ...response.data,
+          externalUrl:
+            response.data?.externalUrl || response.data?.buttonUrl || "",
+          type:
+            response.data?.externalUrl || response.data?.buttonUrl
+              ? "external"
+              : "regular",
           content: response.data?.content || "",
           author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
           date: response.data?.createdAt,
@@ -146,6 +157,8 @@ export const newsfeedAPI = {
         title: data.title,
         content: data.caption || data.content,
         image: data.image,
+        buttonLabel: data.type === "external" ? "Read More" : "",
+        buttonUrl: data.type === "external" ? data.externalUrl : "",
         order: 0,
         isActive: true,
       });
@@ -159,6 +172,8 @@ export const newsfeedAPI = {
         title: data.title,
         content: data.caption || data.content,
         image: data.image,
+        buttonLabel: data.type === "external" ? "Read More" : "",
+        buttonUrl: data.type === "external" ? data.externalUrl : "",
         order: 0,
         isActive: true,
       });

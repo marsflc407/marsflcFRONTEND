@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { CalendarDays, ImageOff, Loader2, UserRound } from "lucide-react";
+import {
+  ArrowUpRight,
+  CalendarDays,
+  ImageOff,
+  Loader2,
+  UserRound,
+} from "lucide-react";
 import { SectionHeader } from "@/components/site/primitives";
 import { newsfeedAPI } from "@/utils/api";
 
@@ -35,9 +41,15 @@ const formatDate = (value) => {
   });
 };
 
+const getExternalUrl = (newsfeed) =>
+  newsfeed.externalUrl || newsfeed.buttonUrl || "";
+
+const isExternalNews = (newsfeed) => Boolean(getExternalUrl(newsfeed));
+
 export default function Newsfeed() {
   const [newsfeeds, setNewsfeeds] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandedNews, setExpandedNews] = useState({});
 
   useEffect(() => {
     let isMounted = true;
@@ -126,15 +138,43 @@ export default function Newsfeed() {
                       </span>
                       <span className="inline-flex items-center gap-1.5 text-[#123B63]/50">
                         <UserRound className="h-3.5 w-3.5" aria-hidden="true" />
-                        {newsfeed.author || "Admin"}
+                        {isExternalNews(newsfeed)
+                          ? newsfeed.sourceName || "External source"
+                          : newsfeed.author || "Admin"}
                       </span>
                     </div>
                     <h2 className="mt-5 font-heading text-2xl font-700 leading-tight text-[#123B63]">
                       {newsfeed.title}
                     </h2>
-                    <p className="mt-4 line-clamp-5 text-sm leading-relaxed text-[#123B63]/70">
+                    <p
+                      className={`mt-4 text-sm leading-relaxed text-[#123B63]/70 ${expandedNews[newsfeed._id] ? "" : "line-clamp-5"}`}
+                    >
                       {newsfeed.content}
                     </p>
+                    {isExternalNews(newsfeed) ? (
+                      <a
+                        href={getExternalUrl(newsfeed)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-6 inline-flex w-fit items-center gap-2 border border-[#0066D6] px-4 py-2 text-sm font-600 text-[#0066D6] transition-colors hover:bg-[#0066D6] hover:text-white"
+                      >
+                        Read More <ArrowUpRight className="h-4 w-4" />
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExpandedNews((current) => ({
+                            ...current,
+                            [newsfeed._id]: !current[newsfeed._id],
+                          }))
+                        }
+                        className="mt-6 inline-flex w-fit items-center border border-[#0066D6] px-4 py-2 text-sm font-600 text-[#0066D6] transition-colors hover:bg-[#0066D6] hover:text-white"
+                        aria-expanded={Boolean(expandedNews[newsfeed._id])}
+                      >
+                        {expandedNews[newsfeed._id] ? "Show Less" : "Read More"}
+                      </button>
+                    )}
                   </div>
                 </article>
               ))}

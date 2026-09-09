@@ -7,6 +7,7 @@ import {
 } from "@/components/site/primitives";
 import useEditableContent from "@/hooks/useEditableContent";
 import { uploadAPI } from "@/utils/api";
+import managingDirectorImage from "@/assets/Family/MD.jpeg";
 const employees = [
   {
     name: "Ayesha Rahman",
@@ -17,12 +18,11 @@ const employees = [
       "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80",
   },
   {
-    name: "Tanvir Hasan",
+    name: "Md. Rokon Uddin Miah",
     role: "Managing Director",
     description: "Enterprise direction and client stewardship.",
     level: "Executive leadership",
-    image:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80",
+    image: managingDirectorImage,
   },
   {
     name: "Nusrat Jahan",
@@ -239,7 +239,7 @@ export default function Family() {
                       <img
                         src={node.image}
                         alt={`${node.name} - ${node.role}`}
-                        className="h-14 w-14 shrink-0 rounded-full border-2 border-[#0066D6] bg-white object-cover p-1"
+                        className="h-20 w-20 shrink-0 border-2 border-[#0066D6] bg-white object-contain p-1 sm:h-24 sm:w-24"
                       />
                       <div>
                         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0066D6]">
@@ -322,11 +322,11 @@ export default function Family() {
                 key={member.role}
                 className="group border border-[#EFF6FF] bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#0066D6] hover:shadow-xl sm:p-8"
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-[#EFF6FF]">
+                <div className="relative aspect-square overflow-hidden bg-[#EFF6FF]">
                   <img
                     src={member.image}
                     alt={`${member.name} - ${member.role}`}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-105"
                   />
                   <span className="absolute bottom-3 left-3 bg-[#123B63] px-3 py-1 font-mono text-xs text-white">
                     {String(employeeStart + index + 1).padStart(2, "0")}
