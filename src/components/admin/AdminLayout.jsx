@@ -14,6 +14,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  Newspaper,
   Users,
   X,
 } from "lucide-react";
@@ -38,8 +39,9 @@ export const NAV_ITEMS = [
   { label: "Messages", to: "/admin/messages", icon: Mail },
   { label: "Applications", to: "/admin/applications", icon: Users },
   { label: "Careers", to: "/admin/careers", icon: CalendarDays },
+  { label: "Newsfeed", to: "/admin/newsfeed", icon: Newspaper },
   { label: "Content Management", to: "/admin/content", icon: FileText },
-  { label: "Media Library", to: "/admin/images", icon: ImagePlus },
+  { label: "Gallary", to: "/admin/gallery", icon: ImagePlus },
   { label: "Footer", to: "/admin/footer", icon: Footprints },
 ];
 

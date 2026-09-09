@@ -1,9 +1,12 @@
 import axios from "axios";
 
+const configuredApiUrl = import.meta.env.VITE_API_URL;
+const apiBaseUrl = configuredApiUrl
+  ? `${configuredApiUrl.replace(/\/+$/, "")}${configuredApiUrl.endsWith("/api") ? "" : "/api"}`
+  : "https://marsflcserver.onrender.com/api";
+
 const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL ||
-    "https://marsflcserver.onrender.com/api",
+  baseURL: apiBaseUrl,
 });
 
 api.interceptors.request.use((config) => {
@@ -62,6 +65,15 @@ export const uploadAPI = {
   delete: (id) => api.delete(`/upload/${id}`),
   replace: (id, formData) => api.put(`/upload/${id}`, formData),
   getAll: () => api.get("/upload"),
+  getGalleryImages: () =>
+    api.get("/upload/gallery").catch(() =>
+      api.get("/upload").then((response) => ({
+        ...response,
+        data: (response?.data || []).filter(
+          (image) => !image.category || image.category === "gallery",
+        ),
+      })),
+    ),
 };
 
 export const heroImageAPI = {
@@ -79,6 +91,98 @@ export const sisterConcernAPI = {
   create: (data) => api.post("/sister-concern", data),
   update: (id, data) => api.put(`/sister-concern/${id}`, data),
   delete: (id) => api.delete(`/sister-concern/${id}`),
+};
+
+export const newsfeedAPI = {
+  preview: (url) => api.post("/newsfeed/preview", { url }),
+  getAll: () =>
+    api.get("/newsfeed").catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.get("/content/home").then((response) => ({
+        ...response,
+        data: (response?.data || [])
+          .filter((item) => item.section === "newsfeed")
+          .map((item) => ({
+            ...item,
+            externalUrl: item.externalUrl || item.buttonUrl || "",
+            type: item.externalUrl || item.buttonUrl ? "external" : "regular",
+            content: item.content || "",
+            author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
+            date: item.createdAt,
+          })),
+      }));
+    }),
+  getAllAdmin: () =>
+    api.get("/newsfeed/admin/all").catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.get("/content/home").then((response) => ({
+        ...response,
+        data: (response?.data || [])
+          .filter((item) => item.section === "newsfeed")
+          .map((item) => ({
+            ...item,
+            externalUrl: item.externalUrl || item.buttonUrl || "",
+            type: item.externalUrl || item.buttonUrl ? "external" : "regular",
+            content: item.content || "",
+            author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
+            date: item.createdAt,
+          })),
+      }));
+    }),
+  getById: (id) =>
+    api.get(`/newsfeed/${id}`).catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.get(`/content/home/${id}`).then((response) => ({
+        ...response,
+        data: {
+          ...response.data,
+          externalUrl:
+            response.data?.externalUrl || response.data?.buttonUrl || "",
+          type:
+            response.data?.externalUrl || response.data?.buttonUrl
+              ? "external"
+              : "regular",
+          content: response.data?.content || "",
+          author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
+          date: response.data?.createdAt,
+        },
+      }));
+    }),
+  create: (data) =>
+    api.post("/newsfeed", data).catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.post("/content", {
+        page: "home",
+        section: "newsfeed",
+        title: data.title,
+        content: data.caption || data.content,
+        image: data.image,
+        buttonLabel: data.type === "external" ? "Read More" : "",
+        buttonUrl: data.type === "external" ? data.externalUrl : "",
+        order: 0,
+        isActive: true,
+      });
+    }),
+  update: (id, data) =>
+    api.put(`/newsfeed/${id}`, data).catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.put(`/content/${id}`, {
+        page: "home",
+        section: "newsfeed",
+        title: data.title,
+        content: data.caption || data.content,
+        image: data.image,
+        buttonLabel: data.type === "external" ? "Read More" : "",
+        buttonUrl: data.type === "external" ? data.externalUrl : "",
+        order: 0,
+        isActive: true,
+      });
+    }),
+  delete: (id) =>
+    api.delete(`/newsfeed/${id}`).catch((error) => {
+      if (error.response?.status !== 404) throw error;
+      return api.delete(`/content/${id}`);
+    }),
 };
 
 export const partnerCompanyAPI = {
@@ -120,8 +224,18 @@ export const contactAPI = {
 export const careerAPI = {
   getAll: () => api.get("/career"),
   getAllAdmin: () => api.get("/career/admin/all"),
-  create: (data) => api.post("/career", data),
-  update: (id, data) => api.put(`/career/${id}`, data),
+  create: (data) =>
+    api.post("/career", {
+      ...data,
+      vacancy: data.vacancy,
+      applicationDeadline: data.applicationDeadline,
+    }),
+  update: (id, data) =>
+    api.put(`/career/${id}`, {
+      ...data,
+      vacancy: data.vacancy,
+      applicationDeadline: data.applicationDeadline,
+    }),
   delete: (id) => api.delete(`/career/${id}`),
 };
 

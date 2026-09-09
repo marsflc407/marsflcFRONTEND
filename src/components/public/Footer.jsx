@@ -230,6 +230,7 @@ function Footer() {
           >
             Copyright {new Date().getFullYear()} {settings.copyrightText}
           </Link>
+          <button class="submitButton" > Admin</button>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end">
             <a
               href={settings.websiteHref}

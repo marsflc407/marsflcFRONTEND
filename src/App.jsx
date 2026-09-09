@@ -20,6 +20,8 @@ import CompanyOverview from "@/pages/CompanyOverview";
 import CPV from "@/pages/CPV";
 import DebtCollection from "@/pages/DebtCollection";
 import Careers from "@/pages/Careers";
+import Gallery from "@/pages/Gallery";
+import Newsfeed from "@/pages/Newsfeed";
 import Contact from "@/pages/Contact";
 import AdminLogin from "@/components/admin/AdminLogin";
 import Dashboard from "@/components/admin/Dashboard";
@@ -36,6 +38,7 @@ import FooterManager from "@/components/admin/FooterManager";
 import DebtCollectionManager from "@/components/admin/DebtCollectionManager";
 import CompanyOverviewManager from "@/components/admin/CompanyOverviewManager";
 import CareerManager from "@/components/admin/CareerManager";
+import NewsfeedManager from "@/components/admin/NewsfeedManager";
 import MessageManager from "@/components/admin/MessageManager";
 import AdminLayout from "@/components/admin/AdminLayout";
 
@@ -97,6 +100,7 @@ function App() {
               <Route path="content" element={<ContentManager />} />
               <Route path="services" element={<ServiceManager />} />
               <Route path="images" element={<ImageManager />} />
+              <Route path="gallery" element={<ImageManager />} />
               <Route
                 path="sister-concerns"
                 element={<SisterConcernManager />}
@@ -107,6 +111,7 @@ function App() {
               />
               <Route path="applications" element={<ApplicationManager />} />
               <Route path="careers" element={<CareerManager />} />
+              <Route path="newsfeed" element={<NewsfeedManager />} />
               <Route path="messages" element={<MessageManager />} />
             </Route>
           </Route>
@@ -120,6 +125,9 @@ function App() {
             <Route path="/cpv" element={<CPV />} />
             <Route path="/debt-collection" element={<DebtCollection />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/company-overview/gallery" element={<Gallery />} />
+            <Route path="/newsfeed" element={<Newsfeed />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/company-overview/about" element={<About />} />
             <Route

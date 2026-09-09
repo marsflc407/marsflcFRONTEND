@@ -11,16 +11,13 @@ import AdminPagination, {
   useAdminPagination,
 } from "@/components/admin/AdminPagination";
 
-const SECTIONS = [
-  { value: "hero", label: "Hero" },
-  { value: "team", label: "Team" },
-  { value: "company-overview", label: "Company Overview" },
-  { value: "services", label: "Services" },
-  { value: "sister-concern", label: "Sister Concern" },
-  { value: "other", label: "Other" },
-];
-
-const EMPTY_FORM = { section: "other", title: "", alt: "", file: null };
+const EMPTY_FORM = {
+  category: "gallery",
+  title: "",
+  description: "",
+  alt: "",
+  file: null,
+};
 const inputClass =
   "w-full border border-[#123B63]/15 bg-white px-3 py-2.5 text-sm text-[#123B63] focus:border-[#0066D6] focus:outline-none focus:ring-2 focus:ring-[#0066D6]/20";
 
@@ -100,8 +97,10 @@ export default function ImageManager() {
     try {
       const formData = new FormData();
       formData.append("image", form.file);
-      formData.append("section", form.section);
+      formData.append("section", "other");
+      formData.append("category", form.category);
       formData.append("title", form.title.trim());
+      formData.append("description", form.description.trim());
       formData.append("alt", form.alt.trim());
       await uploadAPI.uploadSingle(formData);
       setForm(EMPTY_FORM);
@@ -147,8 +146,10 @@ export default function ImageManager() {
       const formData = new FormData();
       formData.append("image", file);
       formData.append("title", image.title || "");
+      formData.append("description", image.description || "");
+      formData.append("category", image.category || "gallery");
       formData.append("alt", image.alt || "");
-      formData.append("section", image.section || "other");
+      formData.append("section", "other");
       await uploadAPI.replace(image._id, formData);
       setNotice("Image replaced successfully.");
       await loadImages();
@@ -194,26 +195,6 @@ export default function ImageManager() {
           >
             <div>
               <label
-                htmlFor="image-section"
-                className="mb-2 block text-sm font-600"
-              >
-                Section
-              </label>
-              <select
-                id="image-section"
-                value={form.section}
-                onChange={update("section")}
-                className={inputClass}
-              >
-                {SECTIONS.map((section) => (
-                  <option key={section.value} value={section.value}>
-                    {section.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label
                 htmlFor="image-title"
                 className="mb-2 block text-sm font-600"
               >
@@ -225,6 +206,22 @@ export default function ImageManager() {
                 onChange={update("title")}
                 className={inputClass}
                 placeholder="Image title"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label
+                htmlFor="image-description"
+                className="mb-2 block text-sm font-600"
+              >
+                Gallery Description
+              </label>
+              <textarea
+                id="image-description"
+                rows={3}
+                value={form.description}
+                onChange={update("description")}
+                className={inputClass}
+                placeholder="Add a short description for the gallery overlay"
               />
             </div>
             <div className="md:col-span-2">
@@ -327,8 +324,13 @@ export default function ImageManager() {
                           {image.title || "Untitled image"}
                         </h3>
                         <p className="mt-1 text-xs uppercase tracking-wider text-[#0066D6]">
-                          {image.section || "other"}
+                          {image.category || image.section || "other"}
                         </p>
+                        {image.description && (
+                          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-[#123B63]/60">
+                            {image.description}
+                          </p>
+                        )}
                       </div>
                       <FileImage
                         className="h-4 w-4 shrink-0 text-[#123B63]/35"

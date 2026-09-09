@@ -34,6 +34,20 @@ const BG_CHECK = [
 
 const APPLICATION_IMAGE =
   "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1400&q=85";
+
+const formatDeadline = (value) => {
+  const deadline = new Date(value);
+  if (Number.isNaN(deadline.getTime())) return "Deadline unavailable";
+
+  return deadline.toLocaleDateString();
+};
+
+const isDeadlinePassed = (value) => {
+  if (!value) return false;
+  const deadline = new Date(value);
+  return !Number.isNaN(deadline.getTime()) && deadline < new Date();
+};
+
 export default function Careers() {
   const [positions, setPositions] = useState([]);
   const [loadingPositions, setLoadingPositions] = useState(true);
@@ -49,6 +63,9 @@ export default function Careers() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const applicationRef = useRef(null);
+  const selectedCareer = positions.find(
+    (career) => career.position === form.position,
+  );
 
   useEffect(() => {
     const loadPositions = async () => {
@@ -175,42 +192,60 @@ export default function Careers() {
                 No open roles are available right now.
               </p>
             ) : (
-              positions.map((p) => (
-                <div
-                  key={p._id}
-                  className="grid gap-5 bg-white p-6 md:grid-cols-12 md:items-center"
-                >
-                  <div className="md:col-span-7">
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <h3 className="font-heading text-lg font-700 uppercase tracking-[0.02em] text-[#123B63]">
-                        {p.position}
-                      </h3>
-                      <span className="border border-[#0066D6] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#0066D6]">
-                        {p.department || "Full-Time"}
-                      </span>
+              positions.map((career) => {
+                const deadlinePassed = isDeadlinePassed(
+                  career.applicationDeadline,
+                );
+
+                return (
+                  <div
+                    key={career._id}
+                    className="grid gap-5 bg-white p-6 md:grid-cols-12 md:items-center"
+                  >
+                    <div className="md:col-span-7">
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        <h3 className="font-heading text-lg font-700 uppercase tracking-[0.02em] text-[#123B63]">
+                          {career.position}
+                        </h3>
+                        <span className="border border-[#0066D6] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#0066D6]">
+                          {career.department || "Full-Time"}
+                        </span>
+                        {deadlinePassed && (
+                          <span className="border border-[#123B63]/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#123B63]/55">
+                            Closed
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-2 text-sm leading-relaxed text-[#123B63]/70">
+                        {career.description}
+                      </p>
+                      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#123B63]/55">
+                        <span>Vacancies: {career.vacancy || 1}</span>
+                        <span>
+                          Deadline: {formatDeadline(career.applicationDeadline)}
+                        </span>
+                      </div>
+                      {career.requirements?.length > 0 && (
+                        <ul className="mt-3 list-inside list-disc text-xs text-[#123B63]/60">
+                          {career.requirements.map((requirement) => (
+                            <li key={requirement}>{requirement}</li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
-                    <p className="mt-2 text-sm leading-relaxed text-[#123B63]/70">
-                      {p.description}
-                    </p>
-                    {p.requirements?.length > 0 && (
-                      <ul className="mt-3 list-inside list-disc text-xs text-[#123B63]/60">
-                        {p.requirements.map((requirement) => (
-                          <li key={requirement}>{requirement}</li>
-                        ))}
-                      </ul>
-                    )}
+                    <div className="md:col-span-5 md:text-right">
+                      <button
+                        type="button"
+                        disabled={deadlinePassed}
+                        onClick={() => scrollToApplication(career.position)}
+                        className="rounded-md border border-[#27578d] bg-[#27578d] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white transition-colors hover:border-[#1f4775] hover:bg-[#1f4775] disabled:cursor-not-allowed disabled:border-[#123B63]/20 disabled:bg-[#123B63]/10 disabled:text-[#123B63]/45"
+                      >
+                        {deadlinePassed ? "Closed" : "Apply"}
+                      </button>
+                    </div>
                   </div>
-                  <div className="md:col-span-5 md:text-right">
-                    <button
-                      type="button"
-                      onClick={() => scrollToApplication(p.position)}
-                      className="border border-[#27578d] bg-[#27578d] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white rounded-md transition-colors hover:bg-[#1f4775] hover:border-[#1f4775]"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>
@@ -407,6 +442,19 @@ export default function Careers() {
                           </option>
                         ))}
                       </select>
+                      {selectedCareer && (
+                        <p className="mt-2 text-xs text-[#123B63]/60">
+                          Vacancies: {selectedCareer.vacancy || 1} | Deadline:{" "}
+                          {formatDeadline(selectedCareer.applicationDeadline)}
+                          {isDeadlinePassed(
+                            selectedCareer.applicationDeadline,
+                          ) && (
+                            <span className="ml-2 font-700 text-[#0066D6]">
+                              Closed
+                            </span>
+                          )}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div>
