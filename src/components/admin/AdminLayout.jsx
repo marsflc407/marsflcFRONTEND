@@ -29,6 +29,24 @@ export const NAV_ITEMS = [
     icon: Building2,
   },
   { label: "Company Overview", to: "/admin/company-overview", icon: Building2 },
+  {
+    label: "Overview Content",
+    to: "/admin/content?page=company-overview",
+    icon: FileText,
+  },
+  { label: "About Us", to: "/admin/content?page=about", icon: FileText },
+  {
+    label: "Management",
+    to: "/admin/management",
+    icon: Users,
+  },
+  { label: "Family", to: "/admin/family", icon: Users },
+  {
+    label: "Sister Concerns",
+    to: "/admin/content?page=sister-concern",
+    icon: Building2,
+  },
+  { label: "Company Images", to: "/admin/images", icon: ImagePlus },
   { label: "Services", to: "/admin/services", icon: BriefcaseBusiness },
   {
     label: "Debt Collection",
@@ -41,7 +59,7 @@ export const NAV_ITEMS = [
   { label: "Careers", to: "/admin/careers", icon: CalendarDays },
   { label: "Newsfeed", to: "/admin/newsfeed", icon: Newspaper },
   { label: "Content Management", to: "/admin/content", icon: FileText },
-  { label: "Gallary", to: "/admin/gallery", icon: ImagePlus },
+  { label: "Gallery", to: "/admin/gallery", icon: ImagePlus },
   { label: "Footer", to: "/admin/footer", icon: Footprints },
 ];
 

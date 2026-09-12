@@ -37,6 +37,7 @@ import ContactSettingsManager from "@/components/admin/ContactSettingsManager";
 import FooterManager from "@/components/admin/FooterManager";
 import DebtCollectionManager from "@/components/admin/DebtCollectionManager";
 import CompanyOverviewManager from "@/components/admin/CompanyOverviewManager";
+import FamilyManager from "@/components/admin/FamilyManager";
 import CareerManager from "@/components/admin/CareerManager";
 import NewsfeedManager from "@/components/admin/NewsfeedManager";
 import MessageManager from "@/components/admin/MessageManager";
@@ -97,6 +98,11 @@ function App() {
                 path="company-overview"
                 element={<CompanyOverviewManager />}
               />
+              <Route
+                path="management"
+                element={<ContentManager initialPage="management" />}
+              />
+              <Route path="family" element={<FamilyManager />} />
               <Route path="content" element={<ContentManager />} />
               <Route path="services" element={<ServiceManager />} />
               <Route path="images" element={<ImageManager />} />

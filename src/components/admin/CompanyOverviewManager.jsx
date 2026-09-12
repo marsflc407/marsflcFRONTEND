@@ -26,13 +26,13 @@ const tools = [
   {
     title: "Management",
     description: "Manage leadership, principles, focus areas and team content.",
-    to: "/admin/content?page=management",
+    to: "/admin/management",
     icon: Users,
   },
   {
     title: "Our Family",
-    description: "Manage family, hierarchy and employee profile content.",
-    to: "/admin/content?page=family",
+    description: "Manage family sections, leadership photos and employees.",
+    to: "/admin/family",
     icon: Users,
   },
   {

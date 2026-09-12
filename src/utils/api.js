@@ -43,6 +43,7 @@ export const authAPI = {
 
 export const contentAPI = {
   getByPage: (page) => api.get(`/content/${page}`),
+  getAdminByPage: (page) => api.get(`/content/admin/${page}`),
   getBySection: (page, section) => api.get(`/content/${page}/${section}`),
   create: (data) => api.post("/content", data),
   update: (id, data) => api.put(`/content/${id}`, data),
