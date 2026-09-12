@@ -47,11 +47,11 @@ const inputClass =
 const getErrorMessage = (error, fallback) =>
   error?.response?.data?.message || error?.message || fallback;
 
-export default function ContentManager() {
+export default function ContentManager({ initialPage = "all" }) {
   const [searchParams] = useSearchParams();
   const [content, setContent] = useState([]);
   const [filterPage, setFilterPage] = useState(
-    searchParams.get("page") || "all",
+    searchParams.get("page") || initialPage,
   );
   const [form, setForm] = useState(EMPTY_FORM);
   const [imageFile, setImageFile] = useState(null);
@@ -74,7 +74,7 @@ export default function ContentManager() {
     try {
       const pages = filterPage === "all" ? PAGES : [filterPage];
       const responses = await Promise.all(
-        pages.map((page) => contentAPI.getByPage(page)),
+        pages.map((page) => contentAPI.getAdminByPage(page)),
       );
       const records = responses.flatMap((response) => response?.data || []);
       setContent(

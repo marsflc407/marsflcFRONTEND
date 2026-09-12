@@ -26,7 +26,7 @@ const employees = [
   },
   {
     name: "Nusrat Jahan",
-    role: "Head of Operations",
+    role: "Director",
     description: "Field and call center command.",
     level: "Operational leadership",
     image:
@@ -85,6 +85,16 @@ const employees = [
   },
 ];
 
+const rolePriority = {
+  Chairman: 0,
+  "Managing Director": 1,
+  Director: 2,
+  "Team Leaders": 3,
+  "Field Executives": 4,
+};
+
+const leadershipRoles = new Set(Object.keys(rolePriority));
+
 const DUMMY_EMPLOYEE_IMAGE =
   "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=600&q=80";
 const DUMMY_FAMILY_HERO_IMAGE =
@@ -101,19 +111,46 @@ export default function Family() {
     )
     .map((record) => ({
       name: record.subtitle || "MARS FLC Team",
-      role: record.title || "Team Member",
+      role:
+        record.title === "Head of Operations"
+          ? "Director"
+          : record.title || "Team Member",
       description: record.content || "",
       level: record.section,
       image: record.image,
-    }));
-  const displayedEmployees = (
-    editableEmployees.length ? editableEmployees : employees
+      order: record.order || 0,
+    }))
+    .sort(
+      (first, second) =>
+        (rolePriority[first.role] ?? 5) - (rolePriority[second.role] ?? 5) ||
+        first.order - second.order,
+    );
+  const editableLeadership = editableEmployees.filter((employee) =>
+    leadershipRoles.has(employee.role),
+  );
+  const editableGeneralEmployees = editableEmployees.filter(
+    (employee) => !leadershipRoles.has(employee.role),
+  );
+  const displayedLeadership = (
+    editableLeadership.length ? editableLeadership : employees.slice(0, 5)
   ).map((employee, index) => ({
     ...employee,
     image:
       employee.image ||
       employeeImages[index]?.url ||
       employees[index]?.image ||
+      DUMMY_EMPLOYEE_IMAGE,
+  }));
+  const displayedEmployees = (
+    editableGeneralEmployees.length
+      ? editableGeneralEmployees
+      : employees.slice(5)
+  ).map((employee, index) => ({
+    ...employee,
+    image:
+      employee.image ||
+      employeeImages[index]?.url ||
+      employees[index + 5]?.image ||
       DUMMY_EMPLOYEE_IMAGE,
   }));
 
@@ -229,7 +266,7 @@ export default function Family() {
           <div className="relative mt-12">
             <div className="absolute bottom-10 left-5 top-10 w-px bg-white/20 sm:left-1/2 sm:-translate-x-1/2" />
             <div className="space-y-4">
-              {displayedEmployees.slice(0, 5).map((node, index) => (
+              {displayedLeadership.map((node, index) => (
                 <div
                   key={node.role}
                   className={`relative flex items-center gap-4 sm:gap-8 ${index % 2 === 1 ? "sm:flex-row-reverse" : ""}`}
@@ -286,8 +323,11 @@ export default function Family() {
           <div className="mt-12 flex items-center justify-between gap-4">
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#123B63]/55">
               Showing {employeeStart + 1}-
-              {Math.min(employeeStart + visibleEmployees, employees.length)} of{" "}
-              {displayedEmployees.length}
+              {Math.min(
+                employeeStart + visibleEmployees,
+                displayedEmployees.length,
+              )}{" "}
+              of {displayedEmployees.length}
             </p>
             <div className="flex gap-2">
               <button
@@ -305,7 +345,10 @@ export default function Family() {
                 type="button"
                 onClick={() =>
                   setEmployeeStart((start) =>
-                    Math.min(employees.length - visibleEmployees, start + 1),
+                    Math.min(
+                      displayedEmployees.length - visibleEmployees,
+                      start + 1,
+                    ),
                   )
                 }
                 disabled={!canGoForward}
