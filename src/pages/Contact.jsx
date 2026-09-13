@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { COMPANY } from "@/config/company";
 const DEFAULT_MAP_URL =
-  "https://www.openstreetmap.org/export/embed.html?bbox=90.35%2C23.81%2C90.39%2C23.84&layer=mapnik&marker=23.8223%2C90.3654";
+  "https://www.openstreetmap.org/export/embed.html?bbox=90.348%2C23.792%2C90.358%2C23.802&layer=mapnik&marker=23.7969375%2C90.3530625";
 
 const DEFAULT_SETTINGS = {
   heroLabel: "Contact Us",
@@ -422,7 +422,8 @@ export default function Contact() {
             Our Location
           </div>
           <h2 className="mt-2 font-heading text-2xl font-700 text-white">
-            Block D, Mirpur-12, Dhaka
+            Suite-C, Level-7, Mirpur Tower, 4 Darus Salam Road, Mirpur-1,
+            Dhaka-1216, Bangladesh
           </h2>
           <div className="relative mt-6 min-h-[420px] h-[70vh] w-full overflow-hidden rounded-lg border border-white/10">
             <iframe
@@ -436,7 +437,7 @@ export default function Contact() {
               type="button"
               onClick={() => setMapKey((key) => key + 1)}
               className="absolute right-4  top-4 right-16 inline-flex items-center gap-2 rounded-md bg-white px-3 py-2 text-xs font-600 text-[#123B63] shadow-lg transition-colors hover:bg-[#0066D6] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#0066D6]"
-              aria-label="Reset map to Mirpur-12 view"
+              aria-label="Reset map to MARS FLC head office"
               title="Reset map view"
             >
               <LocateFixed className="h-4 w-4" aria-hidden="true" />

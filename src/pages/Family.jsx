@@ -141,7 +141,7 @@ export default function Family() {
       employees[index]?.image ||
       DUMMY_EMPLOYEE_IMAGE,
   }));
-  const displayedEmployees = (
+  const displayedGeneralEmployees = (
     editableGeneralEmployees.length
       ? editableGeneralEmployees
       : employees.slice(5)
@@ -153,6 +153,10 @@ export default function Family() {
       employees[index + 5]?.image ||
       DUMMY_EMPLOYEE_IMAGE,
   }));
+  const displayedEmployees = [
+    ...displayedLeadership,
+    ...displayedGeneralEmployees,
+  ];
 
   useEffect(() => {
     uploadAPI
