@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Eye,
+  EyeOff,
   FileImage,
   ImagePlus,
   LoaderCircle,
@@ -36,13 +38,15 @@ export default function ImageManager() {
   const [notice, setNotice] = useState("");
   const { page, pageCount, setPage, pageItems } = useAdminPagination(images);
   const [replacingId, setReplacingId] = useState(null);
+  const [visibilityId, setVisibilityId] = useState(null);
+  const [clearingGallery, setClearingGallery] = useState(false);
 
   const loadImages = async () => {
     setLoading(true);
     setError("");
 
     try {
-      const response = await uploadAPI.getAll();
+      const response = await uploadAPI.getGalleryAdmin();
       setImages(response?.data || []);
     } catch (loadError) {
       setError(getErrorMessage(loadError, "Unable to load images."));
@@ -97,12 +101,12 @@ export default function ImageManager() {
     try {
       const formData = new FormData();
       formData.append("image", form.file);
-      formData.append("section", "other");
+      formData.append("section", "gallery");
       formData.append("category", form.category);
       formData.append("title", form.title.trim());
       formData.append("description", form.description.trim());
       formData.append("alt", form.alt.trim());
-      await uploadAPI.uploadSingle(formData);
+      await uploadAPI.uploadGallery(formData);
       setForm(EMPTY_FORM);
       setNotice("Image uploaded successfully.");
       await loadImages();
@@ -133,6 +137,59 @@ export default function ImageManager() {
     }
   };
 
+  const handleVisibility = async (image) => {
+    setVisibilityId(image._id);
+    setError("");
+    setNotice("");
+
+    try {
+      const response = await uploadAPI.updateVisibility(
+        image._id,
+        image.isActive === false,
+      );
+      const updatedImage = response?.data;
+      setImages((current) =>
+        current.map((currentImage) =>
+          currentImage._id === image._id ? updatedImage : currentImage,
+        ),
+      );
+      setNotice(
+        updatedImage.isActive
+          ? "Image is visible in the public gallery."
+          : "Image hidden from the public gallery.",
+      );
+    } catch (visibilityError) {
+      setError(
+        getErrorMessage(visibilityError, "Unable to update image visibility."),
+      );
+    } finally {
+      setVisibilityId(null);
+    }
+  };
+
+  const handleClearGallery = async () => {
+    if (
+      !window.confirm(
+        "Delete every existing Gallery image permanently? This cannot be undone.",
+      )
+    )
+      return;
+
+    setClearingGallery(true);
+    setError("");
+    setNotice("");
+
+    try {
+      const response = await uploadAPI.deleteAllGallery();
+      setImages([]);
+      setNotice(`${response?.deletedCount || 0} Gallery images deleted.`);
+    } catch (clearError) {
+      setError(getErrorMessage(clearError, "Unable to clear the Gallery."));
+    } finally {
+      setClearingGallery(false);
+    }
+  };
+
   const handleReplace = async (image, file) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
@@ -149,7 +206,7 @@ export default function ImageManager() {
       formData.append("description", image.description || "");
       formData.append("category", image.category || "gallery");
       formData.append("alt", image.alt || "");
-      formData.append("section", "other");
+      formData.append("section", "gallery");
       await uploadAPI.replace(image._id, formData);
       setNotice("Image replaced successfully.");
       await loadImages();
@@ -168,10 +225,10 @@ export default function ImageManager() {
             Admin Manager
           </p>
           <h1 className="mt-2 font-heading text-3xl font-700 text-[#123B63]">
-            Image Manager
+            Gallery Manager
           </h1>
           <p className="mt-2 text-sm text-[#123B63]/65">
-            Upload and organize the image library used across the site.
+            Add, hide, replace, or delete images shown in the public Gallery.
           </p>
         </div>
 
@@ -187,7 +244,9 @@ export default function ImageManager() {
         <section className="mt-8 border border-[#123B63]/10 bg-white p-6 md:p-8">
           <div className="flex items-center gap-3">
             <ImagePlus className="h-5 w-5 text-[#0066D6]" aria-hidden="true" />
-            <h2 className="font-heading text-xl font-700">Upload Image</h2>
+            <h2 className="font-heading text-xl font-700">
+              Upload Gallery Image
+            </h2>
           </div>
           <form
             onSubmit={handleSubmit}
@@ -288,11 +347,26 @@ export default function ImageManager() {
         </section>
 
         <section className="mt-8">
-          <div className="flex items-center justify-between border-b border-[#123B63]/10 pb-4">
+          <div className="flex flex-col gap-3 border-b border-[#123B63]/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="font-heading text-xl font-700">Uploaded Images</h2>
-            <span className="text-sm text-[#123B63]/55">
-              {images.length} total
-            </span>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-[#123B63]/55">
+                {images.length} total
+              </span>
+              <button
+                type="button"
+                onClick={handleClearGallery}
+                disabled={clearingGallery || images.length === 0}
+                className="inline-flex items-center gap-2 text-sm font-600 text-[#C62828] hover:text-[#123B63] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {clearingGallery ? (
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="h-4 w-4" />
+                )}
+                {clearingGallery ? "Deleting..." : "Delete all Gallery images"}
+              </button>
+            </div>
           </div>
           {loading ? (
             <div className="flex items-center gap-2 py-10 text-sm text-[#123B63]/60">
@@ -314,7 +388,7 @@ export default function ImageManager() {
                     <img
                       src={image.url}
                       alt={image.alt || image.title || "Uploaded image"}
-                      className="h-full w-full object-cover"
+                      className={`h-full w-full object-cover ${image.isActive === false ? "opacity-45 grayscale" : ""}`}
                     />
                   </div>
                   <div className="p-4">
@@ -325,6 +399,9 @@ export default function ImageManager() {
                         </h3>
                         <p className="mt-1 text-xs uppercase tracking-wider text-[#0066D6]">
                           {image.category || image.section || "other"}
+                        </p>
+                        <p className="mt-1 text-xs font-600 uppercase tracking-wider text-[#C62828]">
+                          {image.isActive === false ? "Hidden" : "Visible"}
                         </p>
                         {image.description && (
                           <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-[#123B63]/60">
@@ -337,6 +414,25 @@ export default function ImageManager() {
                         aria-hidden="true"
                       />
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => handleVisibility(image)}
+                      disabled={visibilityId === image._id}
+                      className="mt-4 inline-flex items-center gap-2 text-sm text-[#0066D6] hover:text-[#123B63] disabled:opacity-50"
+                    >
+                      {visibilityId === image._id ? (
+                        <LoaderCircle className="h-4 w-4 animate-spin" />
+                      ) : image.isActive === false ? (
+                        <Eye className="h-4 w-4" />
+                      ) : (
+                        <EyeOff className="h-4 w-4" />
+                      )}
+                      {visibilityId === image._id
+                        ? "Updating..."
+                        : image.isActive === false
+                          ? "Show in gallery"
+                          : "Hide from gallery"}
+                    </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(image)}

@@ -152,7 +152,7 @@ export default function FamilyManager() {
     const data = new FormData();
     data.append("image", file);
     data.append("section", "company-overview");
-    data.append("category", "gallery");
+    data.append("category", "other");
     data.append("title", title || "Family image");
     data.append("alt", title || "Family image");
     const response = await uploadAPI.uploadSingle(data);

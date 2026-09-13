@@ -20,7 +20,7 @@ import { footerSettingsAPI } from "@/utils/api";
 
 const companyLinks = [
   { label: "About Us", to: "/company-overview/about" },
-  { label: "Our Management", to: "/company-overview/management" },
+  { label: "Management", to: "/company-overview/management" },
   { label: "Our Family", to: "/company-overview/family" },
   { label: "Sister Concern", to: "/company-overview/sister-concern" },
   { label: "Gallery", to: "/company-overview/gallery" },
