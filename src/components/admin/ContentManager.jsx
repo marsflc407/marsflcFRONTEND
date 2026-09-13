@@ -167,7 +167,7 @@ export default function ContentManager({ initialPage = "all" }) {
         const uploadData = new FormData();
         uploadData.append("image", imageFile);
         uploadData.append("section", "company-overview");
-        uploadData.append("category", "gallery");
+        uploadData.append("category", "other");
         uploadData.append(
           "title",
           form.subtitle || form.title || "Family image",

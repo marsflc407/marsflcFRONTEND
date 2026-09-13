@@ -26,6 +26,7 @@ import Contact from "@/pages/Contact";
 import AdminLogin from "@/components/admin/AdminLogin";
 import Dashboard from "@/components/admin/Dashboard";
 import ContentManager from "@/components/admin/ContentManager";
+import ManagementManager from "@/components/admin/ManagementManager";
 import ServiceManager from "@/components/admin/ServiceManager";
 import ImageManager from "@/components/admin/ImageManager";
 import SisterConcernManager from "@/components/admin/SisterConcernManager";
@@ -98,10 +99,7 @@ function App() {
                 path="company-overview"
                 element={<CompanyOverviewManager />}
               />
-              <Route
-                path="management"
-                element={<ContentManager initialPage="management" />}
-              />
+              <Route path="management" element={<ManagementManager />} />
               <Route path="family" element={<FamilyManager />} />
               <Route path="content" element={<ContentManager />} />
               <Route path="services" element={<ServiceManager />} />

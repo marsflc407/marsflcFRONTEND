@@ -1,9 +1,17 @@
 import axios from "axios";
 
 const configuredApiUrl = import.meta.env.VITE_API_URL;
-const apiBaseUrl = configuredApiUrl
-  ? `${configuredApiUrl.replace(/\/+$/, "")}${configuredApiUrl.endsWith("/api") ? "" : "/api"}`
-  : "https://marsflcserver.onrender.com/api";
+const defaultApiUrl =
+  typeof window !== "undefined" && window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
+    : "https://marsflcserver.onrender.com/api";
+const isLocalhost =
+  typeof window !== "undefined" && window.location.hostname === "localhost";
+const apiBaseUrl = isLocalhost
+  ? "http://localhost:5000/api"
+  : configuredApiUrl
+    ? `${configuredApiUrl.replace(/\/+$/, "")}${configuredApiUrl.endsWith("/api") ? "" : "/api"}`
+    : defaultApiUrl;
 
 const api = axios.create({
   baseURL: apiBaseUrl,
@@ -61,17 +69,23 @@ export const serviceAPI = {
 
 export const uploadAPI = {
   uploadSingle: (formData) => api.post("/upload/single", formData),
+  uploadGallery: (formData) => api.post("/upload/gallery", formData),
+  deleteAllGallery: () => api.delete("/upload/gallery/all"),
   uploadCv: (formData) => api.post("/upload/cv", formData),
   uploadMultiple: (formData) => api.post("/upload/multiple", formData),
   delete: (id) => api.delete(`/upload/${id}`),
   replace: (id, formData) => api.put(`/upload/${id}`, formData),
   getAll: () => api.get("/upload"),
+  getGalleryAdmin: () => api.get("/upload/admin/all"),
+  updateVisibility: (id, isActive) =>
+    api.patch(`/upload/${id}/visibility`, { isActive }),
   getGalleryImages: () =>
     api.get("/upload/gallery").catch(() =>
       api.get("/upload").then((response) => ({
         ...response,
         data: (response?.data || []).filter(
-          (image) => !image.category || image.category === "gallery",
+          (image) =>
+            image.category === "gallery" && image.section === "gallery",
         ),
       })),
     ),

@@ -3,51 +3,6 @@ import { ImageOff, Loader2, Maximize2, X } from "lucide-react";
 import { SectionHeader } from "@/components/site/primitives";
 import { uploadAPI } from "@/utils/api";
 
-const DEMO_GALLERY_IMAGES = [
-  {
-    _id: "demo-gallery-1",
-    title: "Professional Collaboration",
-    description: "People and ideas moving in the same direction.",
-    url: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85",
-    alt: "Professionals collaborating around a table",
-  },
-  {
-    _id: "demo-gallery-2",
-    title: "Focused Operations",
-    description: "A disciplined approach to every client assignment.",
-    url: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=85",
-    alt: "Team meeting in a modern office",
-  },
-  {
-    _id: "demo-gallery-3",
-    title: "Trusted Service",
-    description: "Clear communication supporting confident decisions.",
-    url: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=85",
-    alt: "Business team standing together",
-  },
-  {
-    _id: "demo-gallery-4",
-    title: "Connected Teams",
-    description: "Shared standards across every level of the organisation.",
-    url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=85",
-    alt: "Colleagues working together in an office",
-  },
-  {
-    _id: "demo-gallery-5",
-    title: "Modern Infrastructure",
-    description: "Practical systems built for reliable delivery.",
-    url: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85",
-    alt: "Bright modern office interior",
-  },
-  {
-    _id: "demo-gallery-6",
-    title: "Work With Purpose",
-    description: "Professional energy behind every outcome.",
-    url: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=85",
-    alt: "Team discussing work in an office",
-  },
-];
-
 export default function Gallery() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,12 +15,9 @@ export default function Gallery() {
       try {
         const response = await uploadAPI.getGalleryImages();
         const galleryImages = (response?.data || []).slice(0, 20);
-        if (isMounted)
-          setImages(galleryImages.length ? galleryImages : DEMO_GALLERY_IMAGES);
+        if (isMounted) setImages(galleryImages);
       } catch {
-        if (isMounted) {
-          setImages(DEMO_GALLERY_IMAGES);
-        }
+        if (isMounted) setImages([]);
       } finally {
         if (isMounted) setLoading(false);
       }

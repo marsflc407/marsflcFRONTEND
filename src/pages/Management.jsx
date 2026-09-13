@@ -55,17 +55,37 @@ const team = [
   },
 ];
 
+const managementRoles = new Set(team.map((member) => member.role));
+
 export default function Management() {
   const { get, getItems } = useEditableContent("management");
   const editablePrinciples = getItems("principle");
-  const editableTeam = getItems("team-member");
+  const editableTeam = getItems("team-member")
+    .filter((member) => managementRoles.has(member.title || member.role))
+    .map((member) => ({
+      ...member,
+      role: member.title || member.role || "Management Team",
+      description: member.content || member.description || "",
+    }));
+  const teamByRole = new Map(
+    editableTeam.map((member) => [member.role, member]),
+  );
+  const displayedTeam = team.map((defaultMember) => ({
+    ...defaultMember,
+    ...(teamByRole.get(defaultMember.role) || {}),
+    role: defaultMember.role,
+    description:
+      teamByRole.get(defaultMember.role)?.description ||
+      defaultMember.description,
+    image: teamByRole.get(defaultMember.role)?.image || defaultMember.image,
+  }));
   const editableFocus = getItems("focus-item");
 
   return (
     <>
       <PageHero
         label={get("hero", "subtitle", "Our Management")}
-        title={get("hero", "title", "Governance Built on Integrity")}
+        title={get("hero", "title", "Management Team")}
         intro={get(
           "hero",
           "content",
@@ -195,7 +215,7 @@ export default function Management() {
         <div className="container-custom mx-auto max-w-[1400px] px-4">
           <SectionHeader
             label={get("team", "subtitle", "Management Team")}
-            title={get("team", "title", "Leadership with field awareness")}
+            title={get("team", "title", "Management Team")}
             intro={get(
               "team",
               "content",
@@ -203,7 +223,7 @@ export default function Management() {
             )}
           />
           <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {(editableTeam.length ? editableTeam : team).map((member) => (
+            {displayedTeam.map((member) => (
               <article
                 key={member.role}
                 className="border border-[#EFF6FF] bg-white p-6 transition-shadow hover:shadow-xl sm:p-8"
