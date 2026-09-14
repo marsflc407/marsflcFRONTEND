@@ -213,14 +213,16 @@ body {
 }
 
 .partner-ticker:not(.partner-ticker--compact) .partner-ticker__item {
+  min-width: 375px;
   gap: 1rem;
+  padding: 2rem 2.25rem;
   font-size: 1rem;
   font-weight: 700;
 }
 
 .partner-ticker:not(.partner-ticker--compact) .partner-ticker__logo {
-  height: 72px;
-  width: 72px;
+  height: 90px;
+  width: 90px;
   font-size: 1rem;
 }
 
