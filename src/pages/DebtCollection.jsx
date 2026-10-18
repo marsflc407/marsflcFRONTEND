@@ -17,18 +17,11 @@ import {
 } from "lucide-react";
 import { debtCollectionSettingsAPI } from "@/utils/api";
 
-const FLEET_IMG = [
-  "https://media.base44.com/images/public/6a722bde599ffd853c421721/64fac9e0d_generated_603e1514.png",
-  "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=85",
-];
-
 const DEFAULT_SETTINGS = {
   heroLabel: "Debt Collection",
   heroTitle: "Sovereign Authority in Recovery",
   heroIntro:
     "Debt collection and recovery support for banking and non-banking financial institutions, delivered with professional and responsible service.",
-  heroImages: FLEET_IMG,
   servicesLabel: "Core Collection Services",
   servicesTitle: "Three Tiers of Recovery",
   servicesIntro:
@@ -161,7 +154,6 @@ export default function DebtCollection() {
         label={settings.heroLabel}
         title={settings.heroTitle}
         intro={settings.heroIntro}
-        image={settings.heroImages}
       />
 
       {/* Core Collection Services */}
