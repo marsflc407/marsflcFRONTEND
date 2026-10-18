@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SectionHeader, SectionLabel } from "@/components/site/primitives";
+import LoadingState from "@/components/common/LoadingState";
 import { applicationAPI, careerAPI, uploadAPI } from "@/utils/api";
 import careerHeroImage from "@/assets/carrerHero.jpeg";
 import {
@@ -184,9 +185,7 @@ export default function Careers() {
           />
           <div className="mt-8 space-y-px bg-[#EFF6FF]">
             {loadingPositions ? (
-              <p className="bg-white p-6 text-sm text-[#123B63]/60">
-                Loading open roles...
-              </p>
+              <LoadingState label="Loading open roles..." />
             ) : positions.length === 0 ? (
               <p className="bg-white p-6 text-sm text-[#123B63]/60">
                 No open roles are available right now.

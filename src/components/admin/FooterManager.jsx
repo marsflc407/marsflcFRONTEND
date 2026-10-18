@@ -16,8 +16,8 @@ const DEFAULT_SETTINGS = {
   officeTitle: "Head Office",
   address:
     "Suite-C, Level-7, Mirpur Tower, 4 Darus Salam Road, Mirpur-1, Dhaka-1216, Bangladesh",
-  phone: "01774071130",
-  phoneHref: "tel:+8801774071130",
+  phone: "01988812929",
+  phoneHref: "tel:+8801988812929",
   email: "marsflc407@gmail.com",
   hoursTitle: "Operational Hours",
   hours: [

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { COMPANY } from "@/config/company";
+import LoadingState from "@/components/common/LoadingState";
 import { heroSlideAPI } from "@/utils/api";
 
 const heroImage =
@@ -42,6 +43,7 @@ const slides = [
 function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [managedSlides, setManagedSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [previousSlide, setPreviousSlide] = useState(null);
   const [transitioning, setTransitioning] = useState(false);
 
@@ -72,7 +74,8 @@ function HeroSlider() {
       .then((response) => {
         if (response?.data?.length) setManagedSlides(response.data);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   const goToSlide = (slide) => {
@@ -84,6 +87,17 @@ function HeroSlider() {
   };
 
   const slide = visibleSlides[currentSlide % visibleSlides.length];
+
+  if (loading) {
+    return (
+      <section className="relative flex min-h-[78vh] items-center justify-center overflow-hidden bg-[#123B63] text-white sm:min-h-[84vh]">
+        <LoadingState
+          label="Loading..."
+          className="w-full border-white/10 bg-transparent text-white/70"
+        />
+      </section>
+    );
+  }
 
   return (
     <section className="relative flex min-h-[78vh] items-center overflow-hidden bg-[#123B63] text-white sm:min-h-[84vh]">

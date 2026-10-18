@@ -7,6 +7,7 @@ import {
 } from "@/components/site/primitives";
 import useEditableContent from "@/hooks/useEditableContent";
 import { uploadAPI } from "@/utils/api";
+import LoadingState from "@/components/common/LoadingState";
 import managingDirectorImage from "@/assets/Family/MD.jpeg";
 const employees = [
   {
@@ -97,11 +98,8 @@ const leadershipRoles = new Set(Object.keys(rolePriority));
 
 const DUMMY_EMPLOYEE_IMAGE =
   "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=600&q=80";
-const DUMMY_FAMILY_HERO_IMAGE =
-  "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=85";
-
 export default function Family() {
-  const { records, get } = useEditableContent("family");
+  const { records, get, loading } = useEditableContent("family");
   const [employeeStart, setEmployeeStart] = useState(0);
   const [visibleEmployees, setVisibleEmployees] = useState(5);
   const [employeeImages, setEmployeeImages] = useState([]);
@@ -202,6 +200,10 @@ export default function Family() {
   const canGoForward =
     employeeStart + visibleEmployees < displayedEmployees.length;
 
+  if (loading) {
+    return <LoadingState label="Loading family information..." />;
+  }
+
   return (
     <>
       <PageHero
@@ -212,7 +214,8 @@ export default function Family() {
           "content",
           "A coordinated team with one standard of accountability, from the boardroom to every field visit.",
         )}
-        image={get("hero", "image", DUMMY_FAMILY_HERO_IMAGE)}
+        image={get("hero", "image", "")}
+        useUploadedImages={false}
       />
 
       <section className="border-b border-[#EFF6FF] py-20 md:py-24">

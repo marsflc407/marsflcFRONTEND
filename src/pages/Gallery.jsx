@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { ImageOff, Loader2, Maximize2, X } from "lucide-react";
+import { ImageOff, Maximize2, X } from "lucide-react";
 import { SectionHeader } from "@/components/site/primitives";
+import LoadingState from "@/components/common/LoadingState";
 import { uploadAPI } from "@/utils/api";
 
 export default function Gallery() {
@@ -61,12 +62,7 @@ export default function Gallery() {
       <section className="py-16 md:py-24">
         <div className="mx-auto max-w-[1400px] px-4">
           {loading ? (
-            <div className="flex min-h-64 items-center justify-center border border-[#EFF6FF] bg-[#EFF6FF]/40">
-              <div className="flex items-center gap-3 text-sm text-[#123B63]/65">
-                <Loader2 className="h-5 w-5 animate-spin text-[#0066D6]" />
-                Loading gallery...
-              </div>
-            </div>
+            <LoadingState label="Loading gallery..." />
           ) : images.length === 0 ? (
             <div className="flex min-h-64 flex-col items-center justify-center border border-[#EFF6FF] bg-[#EFF6FF]/40 px-6 text-center">
               <ImageOff className="h-8 w-8 text-[#0066D6]" />

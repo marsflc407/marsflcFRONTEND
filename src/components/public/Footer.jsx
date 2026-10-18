@@ -57,6 +57,14 @@ function Footer() {
           setSettings((current) => ({
             ...current,
             ...response.data,
+            phone:
+              response.data.phone === "01774071130"
+                ? COMPANY.phone
+                : response.data.phone,
+            phoneHref:
+              response.data.phoneHref === "tel:+8801774071130"
+                ? COMPANY.phoneHref
+                : response.data.phoneHref,
             quickLinks: response.data.quickLinks?.length
               ? response.data.quickLinks
               : current.quickLinks,
