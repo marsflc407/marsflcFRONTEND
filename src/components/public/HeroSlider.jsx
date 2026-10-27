@@ -2,17 +2,11 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { COMPANY } from "@/config/company";
-import LoadingState from "@/components/common/LoadingState";
 import { heroSlideAPI } from "@/utils/api";
+import homeHeroImage from "@/assets/Home_hero.png";
 
-const heroImage =
-  "https://media.base44.com/images/public/6a722bde599ffd853c421721/64e1feac0_generated_a2814cae.png";
-const fallbackHeroImages = [
-  heroImage,
-  "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=85",
-  "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1800&q=85",
-];
+const heroImage = homeHeroImage;
+const fallbackHeroImages = [heroImage];
 
 const slides = [
   {
@@ -43,7 +37,6 @@ const slides = [
 function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [managedSlides, setManagedSlides] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [previousSlide, setPreviousSlide] = useState(null);
   const [transitioning, setTransitioning] = useState(false);
 
@@ -74,8 +67,7 @@ function HeroSlider() {
       .then((response) => {
         if (response?.data?.length) setManagedSlides(response.data);
       })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      .catch(() => {});
   }, []);
 
   const goToSlide = (slide) => {
@@ -87,17 +79,6 @@ function HeroSlider() {
   };
 
   const slide = visibleSlides[currentSlide % visibleSlides.length];
-
-  if (loading) {
-    return (
-      <section className="relative flex min-h-[78vh] items-center justify-center overflow-hidden bg-[#123B63] text-white sm:min-h-[84vh]">
-        <LoadingState
-          label="Loading..."
-          className="w-full border-white/10 bg-transparent text-white/70"
-        />
-      </section>
-    );
-  }
 
   return (
     <section className="relative flex min-h-[78vh] items-center overflow-hidden bg-[#123B63] text-white sm:min-h-[84vh]">

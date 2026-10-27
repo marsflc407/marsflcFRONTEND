@@ -9,6 +9,7 @@ import useEditableContent from "@/hooks/useEditableContent";
 import { uploadAPI } from "@/utils/api";
 import LoadingState from "@/components/common/LoadingState";
 import managingDirectorImage from "@/assets/Family/MD.jpeg";
+import familyHeroImage from "@/assets/Family/family_hero.jpeg";
 
 const employees = [
   {
@@ -221,7 +222,7 @@ export default function Family() {
           "content",
           "A coordinated team with one standard of accountability, from the boardroom to every field visit.",
         )}
-        image={get("hero", "image", "")}
+        image={familyHeroImage}
         useUploadedImages={false}
       />
 

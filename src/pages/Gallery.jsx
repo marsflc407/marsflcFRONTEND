@@ -39,18 +39,19 @@ export default function Gallery() {
     };
 
     document.addEventListener("keydown", closeOnEscape);
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", closeOnEscape);
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
     };
   }, [selectedImage]);
 
   return (
     <>
-      <section className="border-b border-[#EFF6FF] bg-[#EFF6FF] py-16 md:py-20">
-        <div className="mx-auto max-w-[1400px] px-4">
+      <section className="border-b border-[#EFF6FF] bg-[#EFF6FF] py-12 sm:py-16 md:py-20">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
           <SectionHeader
             label="MARS FLC / Gallery"
             title="Gallery"
@@ -59,8 +60,8 @@ export default function Gallery() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24">
-        <div className="mx-auto max-w-[1400px] px-4">
+      <section className="py-12 sm:py-16 md:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
           {loading ? (
             <LoadingState label="Loading gallery..." />
           ) : images.length === 0 ? (
@@ -78,7 +79,7 @@ export default function Gallery() {
               {images.map((image) => (
                 <div
                   key={image._id || image.publicId || image.url}
-                  className="group overflow-hidden border border-[#EFF6FF] bg-white"
+                  className="group min-w-0 overflow-hidden border border-[#EFF6FF] bg-white"
                 >
                   <button
                     type="button"
@@ -93,12 +94,12 @@ export default function Gallery() {
                       loading="lazy"
                     />
                     <span className="absolute inset-0 bg-gradient-to-t from-[#123B63]/70 via-transparent to-transparent opacity-70" />
-                    <span className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center border border-white/40 bg-[#123B63]/40 text-white backdrop-blur-sm transition-colors group-hover:bg-[#0066D6]">
+                    <span className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center border border-white/40 bg-[#123B63]/40 text-white backdrop-blur-sm transition-colors group-hover:bg-[#0066D6] sm:right-4 sm:top-4">
                       <Maximize2 className="h-4 w-4" aria-hidden="true" />
                     </span>
                   </button>
-                  <div className="min-h-28 border-t-2 border-[#C62828] p-5">
-                    <h2 className="font-heading text-lg font-700 text-[#123B63]">
+                  <div className="min-h-28 border-t-2 border-[#C62828] p-4 sm:p-5">
+                    <h2 className="break-words font-heading text-lg font-700 text-[#123B63]">
                       {image.title || "Gallery image"}
                     </h2>
                     {image.description && (
@@ -116,7 +117,7 @@ export default function Gallery() {
 
       {selectedImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#071D30]/95 p-4 sm:p-8"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto overscroll-contain bg-[#071D30]/95 p-4 pt-20 sm:items-center sm:p-8"
           role="dialog"
           aria-modal="true"
           aria-label={selectedImage.title || "Full-size gallery image"}
@@ -125,13 +126,13 @@ export default function Gallery() {
           <button
             type="button"
             onClick={() => setSelectedImage(null)}
-            className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center border border-white/30 text-white transition-colors hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white"
+            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center border border-white/30 text-white transition-colors hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white sm:right-6 sm:top-6"
             aria-label="Close full-size image"
           >
             <X className="h-5 w-5" />
           </button>
           <figure
-            className="relative flex max-h-full max-w-6xl flex-col items-center"
+            className="relative flex w-full max-w-6xl flex-col items-center"
             onClick={(event) => event.stopPropagation()}
           >
             <img
@@ -139,12 +140,12 @@ export default function Gallery() {
               alt={
                 selectedImage.alt || selectedImage.title || "MARS FLC gallery"
               }
-              className="max-h-[80vh] max-w-full object-contain"
+              className="max-h-[65vh] max-w-full object-contain sm:max-h-[80vh]"
             />
             {(selectedImage.title || selectedImage.description) && (
               <figcaption className="mt-4 max-w-2xl text-center text-white">
                 {selectedImage.title && (
-                  <div className="font-heading text-xl font-700">
+                  <div className="break-words font-heading text-lg font-700 sm:text-xl">
                     {selectedImage.title}
                   </div>
                 )}
