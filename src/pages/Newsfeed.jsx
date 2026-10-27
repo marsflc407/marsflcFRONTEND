@@ -3,32 +3,11 @@ import {
   ArrowUpRight,
   CalendarDays,
   ImageOff,
-  Loader2,
   UserRound,
 } from "lucide-react";
 import { SectionHeader } from "@/components/site/primitives";
+import LoadingState from "@/components/common/LoadingState";
 import { newsfeedAPI } from "@/utils/api";
-
-const DEMO_NEWSFEEDS = [
-  {
-    _id: "demo-newsfeed-1",
-    title: "Professional service, carefully delivered",
-    content:
-      "MARS Financial and Legal Consultancy Limited brings disciplined processes, clear communication, and dependable support to every client engagement.",
-    image:
-      "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=85",
-    author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
-    date: new Date().toISOString(),
-  },
-  {
-    _id: "demo-newsfeed-2",
-    title: "Building confidence through reliable outcomes",
-    content:
-      "Our teams combine practical expertise and thoughtful technology to support financial institutions with confidence and consistency.",
-    author: "MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED",
-    date: new Date(Date.now() - 86400000).toISOString(),
-  },
-];
 
 const formatDate = (value) => {
   const date = new Date(value);
@@ -49,6 +28,7 @@ const isExternalNews = (newsfeed) => Boolean(getExternalUrl(newsfeed));
 export default function Newsfeed() {
   const [newsfeeds, setNewsfeeds] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [expandedNews, setExpandedNews] = useState({});
 
   useEffect(() => {
@@ -63,10 +43,9 @@ export default function Newsfeed() {
             new Date(second.date).getTime() - new Date(first.date).getTime(),
         );
 
-        if (isMounted)
-          setNewsfeeds(sortedItems.length ? sortedItems : DEMO_NEWSFEEDS);
+        if (isMounted) setNewsfeeds(sortedItems);
       } catch {
-        if (isMounted) setNewsfeeds(DEMO_NEWSFEEDS);
+        if (isMounted) setError("Unable to load the newsfeed right now.");
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -94,12 +73,11 @@ export default function Newsfeed() {
       <section className="py-16 md:py-24">
         <div className="mx-auto max-w-[1400px] px-4">
           {loading ? (
-            <div className="flex min-h-64 items-center justify-center border border-[#EFF6FF] bg-[#EFF6FF]/40">
-              <div className="flex items-center gap-3 text-sm text-[#123B63]/65">
-                <Loader2 className="h-5 w-5 animate-spin text-[#0066D6]" />
-                Loading newsfeed...
-              </div>
-            </div>
+            <LoadingState label="Loading newsfeed..." />
+          ) : error ? (
+            <p className="border border-[#EFF6FF] bg-[#EFF6FF]/40 p-6 text-sm text-[#123B63]/65">
+              {error}
+            </p>
           ) : newsfeeds.length === 0 ? (
             <div className="flex min-h-64 flex-col items-center justify-center border border-[#EFF6FF] bg-[#EFF6FF]/40 px-6 text-center">
               <ImageOff className="h-8 w-8 text-[#0066D6]" />

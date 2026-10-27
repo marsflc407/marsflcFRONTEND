@@ -21,6 +21,7 @@ import {
 } from "@/components/site/primitives";
 import HeroSlider from "@/components/public/HeroSlider";
 import ServiceCard from "@/components/public/ServiceCard";
+import LoadingState from "@/components/common/LoadingState";
 import { COMPANY, SERVICES as COMPANY_SERVICES } from "@/config/company";
 import { serviceAPI } from "@/utils/api";
 
@@ -76,6 +77,8 @@ function Welcome() {
 
 function Services() {
   const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     serviceAPI
@@ -83,29 +86,15 @@ function Services() {
       .then((response) => {
         if (response?.data?.length) setServices(response.data);
       })
-      .catch(() => {});
+      .catch(() => setError("Unable to load services right now."))
+      .finally(() => setLoading(false));
   }, []);
 
-  const serviceItems = services.length
-    ? services.map((service) => ({
-        title: service.title,
-        description: service.description,
-        to: service.type === "cpv" ? "/cpv" : "/debt-collection",
-      }))
-    : [
-        {
-          title: "Contact Point Verification (CPV)",
-          description:
-            "Structured contact point verification for financial and legal decision-making.",
-          to: "/cpv",
-        },
-        {
-          title: "Debt Collection",
-          description:
-            "Professional debt collection and recovery support for banking and non-banking financial institutions.",
-          to: "/debt-collection",
-        },
-      ];
+  const serviceItems = services.map((service) => ({
+    title: service.title,
+    description: service.description,
+    to: service.type === "cpv" ? "/cpv" : "/debt-collection",
+  }));
 
   return (
     <section className="border-b border-[#EFF6FF] py-24">
@@ -115,22 +104,36 @@ function Services() {
           title="The Triptych of Trust"
           intro="Consultancy services for banking and non-banking financial institutions."
         />
-        <div className="mt-12 grid gap-px bg-[#EFF6FF] md:grid-cols-2">
-          {serviceItems.map((s) => (
-            <ServiceCard
-              key={s.title}
-              icon={
-                s.title.toLowerCase().includes("contact") ? (
-                  <FileSearch className="h-10 w-10" />
-                ) : (
-                  <ShieldCheck className="h-10 w-10" />
-                )
-              }
-              title={s.title}
-              description={s.description}
-              link={s.to}
-            />
-          ))}
+        <div className="mt-12">
+          {loading ? (
+            <LoadingState label="Loading services..." />
+          ) : error ? (
+            <p className="border border-[#EFF6FF] bg-[#EFF6FF]/40 p-6 text-sm text-[#123B63]/65">
+              {error}
+            </p>
+          ) : serviceItems.length === 0 ? (
+            <p className="border border-[#EFF6FF] bg-[#EFF6FF]/40 p-6 text-sm text-[#123B63]/65">
+              No services are available right now.
+            </p>
+          ) : (
+            <div className="grid gap-px bg-[#EFF6FF] md:grid-cols-2">
+              {serviceItems.map((s) => (
+                <ServiceCard
+                  key={s.title}
+                  icon={
+                    s.title.toLowerCase().includes("contact") ? (
+                      <FileSearch className="h-10 w-10" />
+                    ) : (
+                      <ShieldCheck className="h-10 w-10" />
+                    )
+                  }
+                  title={s.title}
+                  description={s.description}
+                  link={s.to}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

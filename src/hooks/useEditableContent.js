@@ -3,12 +3,14 @@ import { contentAPI } from "@/utils/api";
 
 export default function useEditableContent(page) {
   const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     contentAPI
       .getByPage(page)
       .then((response) => setRecords(response?.data || []))
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, [page]);
 
   const get = (section, field, fallback = "") => {
@@ -24,5 +26,5 @@ export default function useEditableContent(page) {
         description: item.content || item.description || "",
       }));
 
-  return { records, get, getItems };
+  return { records, get, getItems, loading };
 }

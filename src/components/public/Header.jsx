@@ -57,7 +57,18 @@ function Header() {
       .get()
       .then((response) => {
         if (active && response?.data) {
-          setFooterSettings((current) => ({ ...current, ...response.data }));
+          setFooterSettings((current) => ({
+            ...current,
+            ...response.data,
+            phone:
+              response.data.phone === "01774071130"
+                ? COMPANY.phone
+                : response.data.phone,
+            phoneHref:
+              response.data.phoneHref === "tel:+8801774071130"
+                ? COMPANY.phoneHref
+                : response.data.phoneHref,
+          }));
         }
       })
       .catch(() => {});
@@ -129,7 +140,7 @@ function Header() {
                 </a>
 
                 <span className="contact-ticker__item font-mono text-[10px] uppercase tracking-[0.2em] text-white/60">
-                  24/7 High Capacity Call Center
+                  Business Hours: Open All Day
                 </span>
               </div>
             ))}
@@ -147,7 +158,7 @@ function Header() {
             <img
               src={logo}
               alt="Mars Financial & Legal Consultancy (MARS FLC)"
-              className="h-11 w-11 object-contain"
+              className="h-12 w-12 object-contain sm:h-14 sm:w-14"
             />
             <span className="max-w-[360px] font-heading text-sm font-900 leading-tight tracking-[0.06em] text-[#123B63] sm:text-base">
               MARS FINANCIAL AND LEGAL CONSULTANCY LIMITED
@@ -219,28 +230,18 @@ function Header() {
           </button>
         </div>
 
-        <div
-          className={`absolute inset-x-0 top-full z-50 h-[calc(100dvh-100%)] md:hidden ${
-            mobileOpen ? "pointer-events-auto" : "pointer-events-none"
-          }`}
-          aria-hidden={!mobileOpen}
-        >
-          <button
-            type="button"
-            className={`absolute inset-0 bg-[#06182A]/70 transition-opacity duration-300 ${
-              mobileOpen ? "opacity-100" : "opacity-0"
-            }`}
-            aria-label="Close menu"
-            tabIndex={mobileOpen ? 0 : -1}
-            onClick={() => setMobileOpen(false)}
-          />
-          <nav
-            className={`absolute right-0 top-0 flex h-full w-[min(86vw,360px)] flex-col overflow-y-auto bg-[#123B63] px-6 pb-8 text-white shadow-2xl transition-transform duration-300 ease-out ${
-              mobileOpen ? "translate-x-0" : "translate-x-full"
-            }`}
-            aria-label="Mobile navigation"
-            aria-hidden={!mobileOpen}
-          >
+        {mobileOpen && (
+          <div className="absolute inset-x-0 top-full z-50 h-[calc(100dvh-100%)] max-h-[100dvh] md:hidden">
+            <button
+              type="button"
+              className="absolute inset-0 bg-[#06182A]/70"
+              aria-label="Close menu"
+              onClick={() => setMobileOpen(false)}
+            />
+            <nav
+              className="absolute right-0 top-0 flex h-full min-h-0 w-[min(100%,360px)] touch-pan-y flex-col overscroll-contain overflow-y-auto bg-[#123B63] px-6 pb-[max(2rem,env(safe-area-inset-bottom))] text-white shadow-2xl"
+              aria-label="Mobile navigation"
+            >
             <div className="flex flex-col gap-1">
               <NavLink
                 end
@@ -308,8 +309,9 @@ function Header() {
                 </NavLink>
               ))}
             </div>
-          </nav>
-        </div>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );

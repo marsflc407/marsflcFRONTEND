@@ -7,7 +7,10 @@ import {
 } from "@/components/site/primitives";
 import useEditableContent from "@/hooks/useEditableContent";
 import { uploadAPI } from "@/utils/api";
+import LoadingState from "@/components/common/LoadingState";
 import managingDirectorImage from "@/assets/Family/MD.jpeg";
+import familyHeroImage from "@/assets/Family/family_hero.jpeg";
+
 const employees = [
   {
     name: "Ayesha Rahman",
@@ -97,14 +100,13 @@ const leadershipRoles = new Set(Object.keys(rolePriority));
 
 const DUMMY_EMPLOYEE_IMAGE =
   "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=600&q=80";
-const DUMMY_FAMILY_HERO_IMAGE =
-  "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=85";
 
 export default function Family() {
-  const { records, get } = useEditableContent("family");
+  const { records, get, loading } = useEditableContent("family");
   const [employeeStart, setEmployeeStart] = useState(0);
   const [visibleEmployees, setVisibleEmployees] = useState(5);
   const [employeeImages, setEmployeeImages] = useState([]);
+
   const editableEmployees = records
     .filter(
       (record) => record.section === "employee" && record.isActive !== false,
@@ -125,12 +127,14 @@ export default function Family() {
         (rolePriority[first.role] ?? 5) - (rolePriority[second.role] ?? 5) ||
         first.order - second.order,
     );
+
   const editableLeadership = editableEmployees.filter((employee) =>
     leadershipRoles.has(employee.role),
   );
   const editableGeneralEmployees = editableEmployees.filter(
     (employee) => !leadershipRoles.has(employee.role),
   );
+
   const displayedLeadership = (
     editableLeadership.length ? editableLeadership : employees.slice(0, 5)
   ).map((employee, index) => ({
@@ -141,6 +145,7 @@ export default function Family() {
       employees[index]?.image ||
       DUMMY_EMPLOYEE_IMAGE,
   }));
+
   const displayedGeneralEmployees = (
     editableGeneralEmployees.length
       ? editableGeneralEmployees
@@ -153,6 +158,7 @@ export default function Family() {
       employees[index + 5]?.image ||
       DUMMY_EMPLOYEE_IMAGE,
   }));
+
   const displayedEmployees = [
     ...displayedLeadership,
     ...displayedGeneralEmployees,
@@ -177,7 +183,7 @@ export default function Family() {
       if (window.innerWidth < 640) setVisibleEmployees(1);
       else if (window.innerWidth < 1024) setVisibleEmployees(2);
       else if (window.innerWidth < 1280) setVisibleEmployees(3);
-      else setVisibleEmployees(5);
+      else setVisibleEmployees(4); // Changed to 4 so cards are wider and text is readable
     };
 
     updateVisibleEmployees();
@@ -202,6 +208,10 @@ export default function Family() {
   const canGoForward =
     employeeStart + visibleEmployees < displayedEmployees.length;
 
+  if (loading) {
+    return <LoadingState label="Loading family information..." />;
+  }
+
   return (
     <>
       <PageHero
@@ -212,7 +222,8 @@ export default function Family() {
           "content",
           "A coordinated team with one standard of accountability, from the boardroom to every field visit.",
         )}
-        image={get("hero", "image", DUMMY_FAMILY_HERO_IMAGE)}
+        image={familyHeroImage}
+        useUploadedImages={false}
       />
 
       <section className="border-b border-[#EFF6FF] py-20 md:py-24">
@@ -232,7 +243,7 @@ export default function Family() {
               )}
             </p>
           </div>
-          <div className="border-l-2 border-[#0066D6] bg-[#EFF6FF] p-8 lg:col-span-7 md:p-10">
+          <div className="relative overflow-hidden border-l-2 border-[#0066D6] bg-gradient-to-br from-[#EFF6FF] to-white p-8 shadow-sm lg:col-span-7 md:p-10">
             <Building2 className="h-8 w-8 text-[#0066D6]" aria-hidden="true" />
             <p className="mt-6 font-heading text-3xl font-700 leading-tight text-[#123B63] sm:text-4xl">
               {get(
@@ -248,12 +259,14 @@ export default function Family() {
                 "Our structure makes responsibility visible and keeps every level connected to the client outcome.",
               )}
             </p>
+            <div className="absolute -bottom-8 -right-8 h-32 w-32 rounded-full bg-[#0066D6]/5 blur-2xl" />
           </div>
         </div>
       </section>
 
+      {/* Organizational Chart Section */}
       <section className="border-b border-[#EFF6FF] bg-[#123B63] py-20 text-white md:py-24">
-        <div className="container-custom mx-auto max-w-[1000px] px-4">
+        <div className="container-custom mx-auto max-w-[1100px] px-4">
           <SectionHeader
             label={get("chart", "subtitle", "Organizational Chart")}
             title={
@@ -267,52 +280,69 @@ export default function Family() {
               "Every role contributes to a single accountable recovery and verification workflow.",
             )}
           />
-          <div className="relative mt-12">
-            <div className="absolute bottom-10 left-5 top-10 w-px bg-white/20 sm:left-1/2 sm:-translate-x-1/2" />
-            <div className="space-y-4">
+          <div className="relative mt-16">
+            {/* Vertical Line */}
+            <div className="absolute bottom-10 left-5 top-10 w-px bg-gradient-to-b from-white/0 via-white/20 to-white/0 sm:left-1/2 sm:-translate-x-1/2" />
+            
+            <div className="space-y-6 sm:space-y-8">
               {displayedLeadership.map((node, index) => (
                 <div
                   key={node.role}
-                  className={`relative flex items-center gap-4 sm:gap-8 ${index % 2 === 1 ? "sm:flex-row-reverse" : ""}`}
+                  className={`relative flex items-center gap-4 sm:gap-8 ${
+                    index % 2 === 1 ? "sm:flex-row-reverse" : ""
+                  }`}
                 >
-                  <div className="flex-1 rounded-none border border-white/10 bg-[#0D2F4E] p-5 sm:p-6">
-                    <div className="flex items-center gap-4">
-                      <img
-                        src={node.image}
-                        alt={`${node.name} - ${node.role}`}
-                        className="h-20 w-20 shrink-0 border-2 border-[#0066D6] bg-white object-contain p-1 sm:h-24 sm:w-24"
-                      />
-                      <div>
+                  {/* Card */}
+                  <div className="group flex-1 rounded-xl border border-white/10 bg-gradient-to-br from-[#0D2F4E] to-[#0A233B] p-5 shadow-2xl transition-all duration-300 hover:border-[#0066D6]/50 hover:shadow-[0_0_30px_rgba(0,102,214,0.15)] sm:p-6">
+                    <div className="flex items-start gap-4 sm:gap-5">
+                      <div className="relative shrink-0">
+                        <div className="absolute inset-0 translate-x-1 translate-y-1 rounded-full bg-[#0066D6]/20" />
+                        <img
+                          src={node.image}
+                          alt={`${node.name} - ${node.role}`}
+                          className="relative h-20 w-20 rounded-full border-2 border-[#0066D6] bg-white object-contain p-1 sm:h-24 sm:w-24"
+                        />
+                      </div>
+                      <div className="flex-1">
                         <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0066D6]">
                           {node.level}
                         </div>
-                        <p className="mt-1 text-sm font-600 text-white/75">
+                        <p className="mt-1 text-sm font-600 text-white/90">
                           {node.name}
                         </p>
-                        <h2 className="mt-1 font-heading text-lg font-700 uppercase tracking-[0.05em]">
+                        <h2 className="mt-1 font-heading text-lg font-700 uppercase tracking-[0.05em] text-white">
                           {node.role}
                         </h2>
                       </div>
                     </div>
-                    <p className="mt-2 text-sm text-white/55">
-                      {node.description}
-                    </p>
+                    
+                    {/* INDIVIDUAL SCROLLER FOR LONG TEXT */}
+                    <div className="mt-4 max-h-[120px] overflow-y-auto pr-2 custom-scrollbar">
+                      <p className="text-sm leading-relaxed text-white/60">
+                        {node.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center bg-[#0066D6] font-mono text-sm font-700 sm:h-12 sm:w-12">
+
+                  {/* Number Badge */}
+                  <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-4 border-[#123B63] bg-[#0066D6] font-mono text-sm font-700 shadow-lg sm:h-12 sm:w-12">
                     {String(index + 1).padStart(2, "0")}
                   </div>
+                  
                   <div className="hidden flex-1 sm:block" />
                 </div>
               ))}
             </div>
+            
             <ChevronDown
-              className="absolute -bottom-4 left-0 h-5 w-5 translate-x-[10px] text-[#0066D6] sm:left-1/2 sm:-translate-x-1/2"
+              className="absolute -bottom-6 left-0 h-6 w-6 translate-x-[8px] text-[#0066D6] sm:left-1/2 sm:-translate-x-1/2"
               aria-hidden="true"
             />
           </div>
         </div>
       </section>
 
+      {/* Employees Carousel Section */}
       <section className="py-20 md:py-24">
         <div className="container-custom mx-auto max-w-[1400px] px-4">
           <SectionHeader
@@ -324,24 +354,18 @@ export default function Family() {
               "Professional roles supporting one accountable recovery and verification workflow.",
             )}
           />
-          <div className="mt-12 flex items-center justify-between gap-4">
-            <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#123B63]/55">
-              Showing {employeeStart + 1}-
-              {Math.min(
-                employeeStart + visibleEmployees,
-                displayedEmployees.length,
-              )}{" "}
-              of {displayedEmployees.length}
+          
+          <div className="mt-12 flex items-center justify-between gap-4 border-b border-[#EFF6FF] pb-6">
+            <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#123B63]/60">
+              Showing <span className="font-700 text-[#123B63]">{employeeStart + 1}-{Math.min(employeeStart + visibleEmployees, displayedEmployees.length)}</span> of {displayedEmployees.length}
             </p>
             <div className="flex gap-2">
               <button
                 type="button"
-                onClick={() =>
-                  setEmployeeStart((start) => Math.max(0, start - 1))
-                }
+                onClick={() => setEmployeeStart((start) => Math.max(0, start - 1))}
                 disabled={!canGoBack}
                 aria-label="Previous employees"
-                className="flex h-10 w-10 items-center justify-center border border-[#123B63]/20 text-[#123B63] transition-colors hover:border-[#0066D6] hover:bg-[#0066D6] hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#123B63]/15 bg-white text-[#123B63] shadow-sm transition-all duration-300 hover:-translate-x-0.5 hover:border-[#0066D6] hover:bg-[#0066D6] hover:text-white disabled:pointer-events-none disabled:opacity-30"
               >
                 <ArrowLeft className="h-4 w-4" />
               </button>
@@ -349,50 +373,92 @@ export default function Family() {
                 type="button"
                 onClick={() =>
                   setEmployeeStart((start) =>
-                    Math.min(
-                      displayedEmployees.length - visibleEmployees,
-                      start + 1,
-                    ),
+                    Math.min(displayedEmployees.length - visibleEmployees, start + 1),
                   )
                 }
                 disabled={!canGoForward}
                 aria-label="Next employees"
-                className="flex h-10 w-10 items-center justify-center border border-[#123B63]/20 text-[#123B63] transition-colors hover:border-[#0066D6] hover:bg-[#0066D6] hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#123B63]/15 bg-white text-[#123B63] shadow-sm transition-all duration-300 hover:translate-x-0.5 hover:border-[#0066D6] hover:bg-[#0066D6] hover:text-white disabled:pointer-events-none disabled:opacity-30"
               >
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
           </div>
-          <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visibleEmployeeCards.map((member, index) => (
               <article
                 key={member.role}
-                className="group border border-[#EFF6FF] bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#0066D6] hover:shadow-xl sm:p-8"
+                className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#EFF6FF] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#0066D6]/30 hover:shadow-xl hover:shadow-[#0066D6]/5"
               >
-                <div className="relative aspect-square overflow-hidden bg-[#EFF6FF]">
+                {/* Fixed image area */}
+                <div className="relative h-64 w-full shrink-0 overflow-hidden bg-[#F8FAFC] sm:h-72">
                   <img
                     src={member.image}
                     alt={`${member.name} - ${member.role}`}
                     className="h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-105"
                   />
-                  <span className="absolute bottom-3 left-3 bg-[#123B63] px-3 py-1 font-mono text-xs text-white">
+                  <span className="absolute bottom-4 left-4 rounded-md bg-[#123B63] px-2.5 py-1 font-mono text-xs font-600 text-white shadow-sm">
                     {String(employeeStart + index + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <p className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-[#0066D6]">
-                  {member.name}
-                </p>
-                <h2 className="mt-2 font-heading text-lg font-700 uppercase tracking-[0.05em] text-[#123B63]">
-                  {member.role}
-                </h2>
-                <p className="mt-3 text-sm leading-relaxed text-[#123B63]/65">
-                  {member.description}
-                </p>
+                
+                {/* Content area */}
+                <div className="flex flex-1 flex-col p-5 sm:p-6">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0066D6]">
+                    {member.name}
+                  </p>
+                  <h2 className="mt-1.5 font-heading text-base font-700 uppercase tracking-[0.05em] text-[#123B63]">
+                    {member.role}
+                  </h2>
+                  
+                  {/* INDIVIDUAL SCROLLER FOR EMPLOYEE TEXT (Fixed Height) */}
+                  <div className="mt-3 max-h-[140px] overflow-y-auto pr-2 custom-scrollbar-light">
+                    <p className="text-sm leading-relaxed text-[#123B63]/70">
+                      {member.description}
+                    </p>
+                  </div>
+                </div>
               </article>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Custom Scrollbar Styles */}
+      <style>{`
+        /* Scrollbar for Dark Chart Section */
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(0, 102, 214, 0.5);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(0, 102, 214, 0.8);
+        }
+
+        /* Scrollbar for Light Employee Cards */
+        .custom-scrollbar-light::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar-light::-webkit-scrollbar-track {
+          background: #F1F5F9;
+          border-radius: 4px;
+        }
+        .custom-scrollbar-light::-webkit-scrollbar-thumb {
+          background: #CBD5E1;
+          border-radius: 4px;
+        }
+        .custom-scrollbar-light::-webkit-scrollbar-thumb:hover {
+          background: #94A3B8;
+        }
+      `}</style>
     </>
   );
 }

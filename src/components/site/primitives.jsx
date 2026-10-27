@@ -44,7 +44,13 @@ export function SectionHeader({
   );
 }
 
-export function PageHero({ label, title, intro, image }) {
+export function PageHero({
+  label,
+  title,
+  intro,
+  image,
+  useUploadedImages = true,
+}) {
   const fallbackImages = Array.isArray(image) ? image : image ? [image] : [];
   const [heroImages, setHeroImages] = useState(fallbackImages);
   const [currentImage, setCurrentImage] = useState(0);
@@ -55,6 +61,8 @@ export function PageHero({ label, title, intro, image }) {
   }, [image]);
 
   useEffect(() => {
+    if (!useUploadedImages) return undefined;
+
     heroImageAPI
       .getAll()
       .then((uploadedImages) => {
@@ -63,7 +71,7 @@ export function PageHero({ label, title, intro, image }) {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [useUploadedImages]);
 
   useEffect(() => {
     if (heroImages.length < 2) return undefined;

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SectionHeader, SectionLabel } from "@/components/site/primitives";
+import LoadingState from "@/components/common/LoadingState";
 import { applicationAPI, careerAPI, uploadAPI } from "@/utils/api";
 import careerHeroImage from "@/assets/carrerHero.jpeg";
 import {
@@ -149,23 +150,23 @@ export default function Careers() {
   return (
     <>
       <section className="bg-[#123B63] text-white">
-        <div className="mx-auto grid max-w-[1400px] gap-8 px-4 lg:min-h-[520px] lg:grid-cols-12 lg:gap-12">
-          <div className="flex flex-col justify-center py-20 lg:col-span-7 lg:py-24">
+        <div className="mx-auto grid max-w-[1400px] gap-6 px-4 py-10 sm:gap-8 sm:py-12 lg:min-h-[520px] lg:grid-cols-12 lg:gap-12 lg:py-0">
+          <div className="flex flex-col justify-center lg:col-span-7 lg:py-24">
             <SectionLabel>We're Hiring</SectionLabel>
-            <h1 className="mt-5 max-w-3xl font-heading text-4xl font-800 leading-[1.05] sm:text-5xl md:text-6xl">
+            <h1 className="mt-5 max-w-3xl font-heading text-3xl font-800 leading-[1.05] sm:text-5xl md:text-6xl">
               The Talent Gateway
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/75">
+            <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/75 sm:mt-6 sm:text-lg">
               MARS FLC welcomes professionals interested in legal, financial,
               recovery, verification, and administrative support work.
             </p>
           </div>
-          <div className="flex items-center py-6 lg:col-span-5 lg:py-10">
-            <div className="h-full max-h-[460px] w-full overflow-hidden rounded-xl border border-white/20 shadow-2xl">
+          <div className="flex items-center lg:col-span-5 lg:py-10">
+            <div className="w-full overflow-hidden rounded-xl border border-[#123B63] bg-[#123B63] lg:h-full lg:max-h-[460px]">
               <img
                 src={careerHeroImage}
                 alt="Professionals collaborating during a job application meeting"
-                className="h-full min-h-[280px] w-full object-cover"
+                className="block h-auto w-full object-contain lg:h-full lg:min-h-[280px]"
                 loading="eager"
                 fetchPriority="high"
               />
@@ -184,9 +185,7 @@ export default function Careers() {
           />
           <div className="mt-8 space-y-px bg-[#EFF6FF]">
             {loadingPositions ? (
-              <p className="bg-white p-6 text-sm text-[#123B63]/60">
-                Loading open roles...
-              </p>
+              <LoadingState label="Loading open roles..." />
             ) : positions.length === 0 ? (
               <p className="bg-white p-6 text-sm text-[#123B63]/60">
                 No open roles are available right now.
@@ -200,11 +199,11 @@ export default function Careers() {
                 return (
                   <div
                     key={career._id}
-                    className="grid gap-5 bg-white p-6 md:grid-cols-12 md:items-center"
+                    className="grid min-w-0 gap-5 bg-white p-4 sm:p-6 md:grid-cols-12 md:items-center"
                   >
-                    <div className="md:col-span-7">
+                    <div className="min-w-0 md:col-span-7">
                       <div className="flex flex-wrap items-center gap-2.5">
-                        <h3 className="font-heading text-lg font-700 uppercase tracking-[0.02em] text-[#123B63]">
+                        <h3 className="break-words font-heading text-lg font-700 uppercase tracking-[0.02em] text-[#123B63]">
                           {career.position}
                         </h3>
                         <span className="border border-[#0066D6] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#0066D6]">
@@ -238,7 +237,7 @@ export default function Careers() {
                         type="button"
                         disabled={deadlinePassed}
                         onClick={() => scrollToApplication(career.position)}
-                        className="rounded-md border border-[#27578d] bg-[#27578d] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white transition-colors hover:border-[#1f4775] hover:bg-[#1f4775] disabled:cursor-not-allowed disabled:border-[#123B63]/20 disabled:bg-[#123B63]/10 disabled:text-[#123B63]/45"
+                        className="w-full rounded-md border border-[#27578d] bg-[#27578d] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white transition-colors hover:border-[#1f4775] hover:bg-[#1f4775] disabled:cursor-not-allowed disabled:border-[#123B63]/20 disabled:bg-[#123B63]/10 disabled:text-[#123B63]/45 sm:w-auto"
                       >
                         {deadlinePassed ? "Closed" : "Apply"}
                       </button>
@@ -346,7 +345,7 @@ export default function Careers() {
             intro="Submit your details and our recruitment team will review your application."
           />
           <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:items-stretch">
-            <div className="rounded-lg bg-white p-6 text-[#123B63] shadow-xl md:p-8 lg:col-span-7">
+            <div className="min-w-0 rounded-lg bg-white p-4 text-[#123B63] shadow-xl sm:p-6 md:p-8 lg:col-span-7">
               {submitted ? (
                 <div className="flex h-full flex-col items-center justify-center py-10 text-center">
                   <CheckCircle2 className="h-12 w-12 text-[#0066D6]" />
@@ -470,7 +469,7 @@ export default function Careers() {
                       required
                       accept=".pdf,.doc,.docx"
                       onChange={update("cv")}
-                      className={`${inputClass} file:mr-4 file:rounded file:border-0 file:bg-[#123B63] file:px-4 file:py-2 file:text-white file:text-sm`}
+                      className={`${inputClass} file:mr-2 file:rounded file:border-0 file:bg-[#123B63] file:px-2 file:py-2 file:text-xs file:text-white sm:file:mr-4 sm:file:px-4 sm:file:text-sm`}
                     />
                   </div>
                   <div>
@@ -501,7 +500,7 @@ export default function Careers() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="rounded-md btn-crimson disabled:cursor-not-allowed disabled:opacity-60"
+                    className="w-full rounded-md btn-crimson disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                   >
                     {submitting ? "Submitting..." : "Submit Application"}{" "}
                     <Send className="h-4 w-4" />

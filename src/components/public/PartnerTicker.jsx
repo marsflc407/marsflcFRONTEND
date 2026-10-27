@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PARTNERS } from "@/config/partners";
+import LoadingState from "@/components/common/LoadingState";
 import { partnerCompanyAPI } from "@/utils/api";
 
 function PartnerGroup({ partners, hidden = false }) {
@@ -30,6 +31,7 @@ function PartnerGroup({ partners, hidden = false }) {
 
 export default function PartnerTicker({ compact = false }) {
   const [partners, setPartners] = useState(PARTNERS);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
@@ -39,7 +41,10 @@ export default function PartnerTicker({ compact = false }) {
       .then((response) => {
         if (active && response?.data?.length) setPartners(response.data);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => {
+        if (active) setLoading(false);
+      });
 
     return () => {
       active = false;
@@ -51,22 +56,31 @@ export default function PartnerTicker({ compact = false }) {
       className={`partner-ticker ${compact ? "partner-ticker--compact" : ""}`}
       aria-label="Partner and company ticker"
     >
-      {!compact && (
-        <div className="mx-auto max-w-[1400px] px-4 py-5">
-          <div className="mb-3 flex items-center gap-3">
-            <span className="h-px w-8 bg-[#0066D6]" aria-hidden="true" />
-            <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#0066D6]">
-              Partner Network
-            </p>
+      {loading ? (
+        <LoadingState
+          label="Loading partners..."
+          className="min-h-24 border-0 bg-transparent"
+        />
+      ) : (
+        <>
+          {!compact && (
+            <div className="mx-auto max-w-[1400px] px-4 py-5">
+              <div className="mb-3 flex items-center gap-3">
+                <span className="h-px w-8 bg-[#0066D6]" aria-hidden="true" />
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#0066D6]">
+                  Partner Network
+                </p>
+              </div>
+            </div>
+          )}
+          <div className="partner-ticker__viewport">
+            <div className="partner-ticker__track">
+              <PartnerGroup partners={partners} />
+              <PartnerGroup partners={partners} hidden />
+            </div>
           </div>
-        </div>
+        </>
       )}
-      <div className="partner-ticker__viewport">
-        <div className="partner-ticker__track">
-          <PartnerGroup partners={partners} />
-          <PartnerGroup partners={partners} hidden />
-        </div>
-      </div>
     </section>
   );
 }
