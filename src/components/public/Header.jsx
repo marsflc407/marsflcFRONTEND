@@ -68,6 +68,7 @@ function Header() {
               response.data.phoneHref === "tel:+8801774071130"
                 ? COMPANY.phoneHref
                 : response.data.phoneHref,
+            email: COMPANY.email,
           }));
         }
       })
@@ -242,55 +243,10 @@ function Header() {
               className="absolute right-0 top-0 flex h-full min-h-0 w-[min(100%,360px)] touch-pan-y flex-col overscroll-contain overflow-y-auto bg-[#123B63] px-6 pb-[max(2rem,env(safe-area-inset-bottom))] text-white shadow-2xl"
               aria-label="Mobile navigation"
             >
-            <div className="flex flex-col gap-1">
-              <NavLink
-                end
-                to="/"
-                tabIndex={mobileOpen ? 0 : -1}
-                onClick={() => setMobileOpen(false)}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 rounded-md border-b border-white/10 px-1 py-4 font-heading text-sm font-700 uppercase tracking-[0.1em] transition-all duration-200 hover:bg-white/10 ${
-                    isActive
-                      ? "font-800 text-[#6EC1FF]"
-                      : "text-white hover:text-[#6EC1FF]"
-                  }`
-                }
-              >
-                <House className="h-4 w-4" aria-hidden="true" />
-                Home
-              </NavLink>
-              <button
-                type="button"
-                className="flex w-full items-center justify-between border-b border-white/10 px-1 py-4 text-left font-heading text-sm font-700 uppercase tracking-[0.1em] text-white transition-colors hover:text-[#6EC1FF]"
-                aria-expanded={companyOpen}
-                onClick={() => setCompanyOpen((open) => !open)}
-                tabIndex={mobileOpen ? 0 : -1}
-              >
-                <Building2 className="h-4 w-4" aria-hidden="true" />
-                Company Overview
-                <ChevronDown
-                  className={`h-4 w-4 transition-transform ${companyOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-              {companyOpen && (
-                <div className="ml-2 border-l-2 border-[#6EC1FF] pl-4">
-                  {companyLinks.map((link) => (
-                    <Link
-                      key={link.to}
-                      to={link.to}
-                      tabIndex={mobileOpen ? 0 : -1}
-                      onClick={() => setMobileOpen(false)}
-                      className="block py-3 font-heading text-xs font-700 uppercase tracking-[0.06em] text-white/75 transition-colors hover:text-[#6EC1FF]"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-              {navigationLinks.slice(1).map(({ icon: Icon, ...link }) => (
+              <div className="flex flex-col gap-1">
                 <NavLink
-                  key={link.to}
-                  to={link.to}
+                  end
+                  to="/"
                   tabIndex={mobileOpen ? 0 : -1}
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
@@ -301,14 +257,59 @@ function Header() {
                     }`
                   }
                 >
-                  {createElement(Icon, {
-                    className: "h-4 w-4",
-                    "aria-hidden": true,
-                  })}
-                  {link.label}
+                  <House className="h-4 w-4" aria-hidden="true" />
+                  Home
                 </NavLink>
-              ))}
-            </div>
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-between border-b border-white/10 px-1 py-4 text-left font-heading text-sm font-700 uppercase tracking-[0.1em] text-white transition-colors hover:text-[#6EC1FF]"
+                  aria-expanded={companyOpen}
+                  onClick={() => setCompanyOpen((open) => !open)}
+                  tabIndex={mobileOpen ? 0 : -1}
+                >
+                  <Building2 className="h-4 w-4" aria-hidden="true" />
+                  Company Overview
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${companyOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {companyOpen && (
+                  <div className="ml-2 border-l-2 border-[#6EC1FF] pl-4">
+                    {companyLinks.map((link) => (
+                      <Link
+                        key={link.to}
+                        to={link.to}
+                        tabIndex={mobileOpen ? 0 : -1}
+                        onClick={() => setMobileOpen(false)}
+                        className="block py-3 font-heading text-xs font-700 uppercase tracking-[0.06em] text-white/75 transition-colors hover:text-[#6EC1FF]"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                {navigationLinks.slice(1).map(({ icon: Icon, ...link }) => (
+                  <NavLink
+                    key={link.to}
+                    to={link.to}
+                    tabIndex={mobileOpen ? 0 : -1}
+                    onClick={() => setMobileOpen(false)}
+                    className={({ isActive }) =>
+                      `flex items-center gap-2 rounded-md border-b border-white/10 px-1 py-4 font-heading text-sm font-700 uppercase tracking-[0.1em] transition-all duration-200 hover:bg-white/10 ${
+                        isActive
+                          ? "font-800 text-[#6EC1FF]"
+                          : "text-white hover:text-[#6EC1FF]"
+                      }`
+                    }
+                  >
+                    {createElement(Icon, {
+                      className: "h-4 w-4",
+                      "aria-hidden": true,
+                    })}
+                    {link.label}
+                  </NavLink>
+                ))}
+              </div>
             </nav>
           </div>
         )}

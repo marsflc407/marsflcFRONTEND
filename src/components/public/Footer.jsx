@@ -65,6 +65,7 @@ function Footer() {
               response.data.phoneHref === "tel:+8801774071130"
                 ? COMPANY.phoneHref
                 : response.data.phoneHref,
+            email: COMPANY.email,
             quickLinks: response.data.quickLinks?.length
               ? response.data.quickLinks
               : current.quickLinks,
@@ -238,7 +239,7 @@ function Footer() {
           >
             Copyright {new Date().getFullYear()} {settings.copyrightText}
           </Link>
-          <button class="submitButton" > Admin</button>
+          <button class="submitButton"> Admin</button>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end">
             <a
               href={settings.websiteHref}
