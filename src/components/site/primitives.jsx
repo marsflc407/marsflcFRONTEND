@@ -50,14 +50,18 @@ export function PageHero({
   intro,
   image,
   useUploadedImages = true,
+  rotationInterval = 3000,
+  imageTransitionDuration = 1100,
 }) {
   const fallbackImages = Array.isArray(image) ? image : image ? [image] : [];
   const [heroImages, setHeroImages] = useState(fallbackImages);
   const [currentImage, setCurrentImage] = useState(0);
+  const [previousImage, setPreviousImage] = useState(null);
 
   useEffect(() => {
     setHeroImages(fallbackImages);
     setCurrentImage(0);
+    setPreviousImage(null);
   }, [image]);
 
   useEffect(() => {
@@ -76,20 +80,41 @@ export function PageHero({
   useEffect(() => {
     if (heroImages.length < 2) return undefined;
     const interval = window.setInterval(() => {
-      setCurrentImage((index) => (index + 1) % heroImages.length);
-    }, 3000);
+      setCurrentImage((index) => {
+        setPreviousImage(index);
+        return (index + 1) % heroImages.length;
+      });
+    }, rotationInterval);
     return () => window.clearInterval(interval);
-  }, [heroImages.length]);
+  }, [heroImages.length, rotationInterval]);
+
+  useEffect(() => {
+    if (previousImage === null) return undefined;
+    const timeout = window.setTimeout(() => {
+      setPreviousImage(null);
+    }, imageTransitionDuration);
+    return () => window.clearTimeout(timeout);
+  }, [previousImage, imageTransitionDuration]);
 
   return (
     <section className="relative bg-[#123B63] text-white">
       {image && (
         <div className="absolute inset-0">
+          {previousImage !== null && (
+            <img
+              key={`exit-${previousImage}`}
+              src={heroImages[previousImage % heroImages.length]}
+              alt=""
+              className="hero-image-exit absolute inset-0 h-full w-full object-cover"
+              style={{ animationDuration: `${imageTransitionDuration}ms` }}
+            />
+          )}
           <img
             key={currentImage}
             src={heroImages[currentImage % heroImages.length]}
             alt=""
-            className="hero-image-enter h-full w-full object-cover"
+            className="hero-image-enter absolute inset-0 h-full w-full object-cover"
+            style={{ animationDuration: `${imageTransitionDuration}ms` }}
           />
         </div>
       )}
