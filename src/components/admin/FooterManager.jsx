@@ -330,6 +330,6 @@ function ItemEditor({ collection, items, fields, onChange, onAdd, onRemove }) {
       >
         <Plus className="h-4 w-4" /> Add item
       </button>
-    </div>
+    </div>  
   );
 }

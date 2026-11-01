@@ -112,6 +112,7 @@ export default function Family() {
       (record) => record.section === "employee" && record.isActive !== false,
     )
     .map((record) => ({
+      id: record._id,
       name: record.subtitle || "MARS FLC Team",
       role:
         record.title === "Head of Operations"
@@ -135,34 +136,38 @@ export default function Family() {
     (employee) => !leadershipRoles.has(employee.role),
   );
 
-  const displayedLeadership = (
+  const fallbackImages = employeeImages.filter(
+    (image, index, images) =>
+      image.url && images.findIndex((candidate) => candidate.url === image.url) === index,
+  );
+  const usedImages = new Set();
+  const displayedEmployees = (
     editableLeadership.length ? editableLeadership : employees.slice(0, 5)
-  ).map((employee, index) => ({
-    ...employee,
-    image:
-      employee.image ||
-      employeeImages[index]?.url ||
-      employees[index]?.image ||
-      DUMMY_EMPLOYEE_IMAGE,
-  }));
+  )
+    .concat(
+      editableGeneralEmployees.length
+        ? editableGeneralEmployees
+        : employees.slice(5),
+    )
+    .map((employee, index) => {
+      const matchingImage = fallbackImages.find(
+        (image) =>
+          image.title?.trim().toLowerCase() === employee.name.trim().toLowerCase(),
+      );
+      const image =
+        employee.image ||
+        matchingImage?.url ||
+        employees[index]?.image ||
+        fallbackImages.find((candidate) => !usedImages.has(candidate.url))
+          ?.url ||
+        DUMMY_EMPLOYEE_IMAGE;
 
-  const displayedGeneralEmployees = (
-    editableGeneralEmployees.length
-      ? editableGeneralEmployees
-      : employees.slice(5)
-  ).map((employee, index) => ({
-    ...employee,
-    image:
-      employee.image ||
-      employeeImages[index]?.url ||
-      employees[index + 5]?.image ||
-      DUMMY_EMPLOYEE_IMAGE,
-  }));
-
-  const displayedEmployees = [
-    ...displayedLeadership,
-    ...displayedGeneralEmployees,
-  ];
+      usedImages.add(image);
+      return { ...employee, image };
+    });
+  const displayedLeadership = displayedEmployees.filter((employee) =>
+    leadershipRoles.has(employee.role),
+  );
 
   useEffect(() => {
     uploadAPI
@@ -287,7 +292,7 @@ export default function Family() {
             <div className="space-y-6 sm:space-y-8">
               {displayedLeadership.map((node, index) => (
                 <div
-                  key={node.role}
+                  key={node.id || `${node.name}-${node.role}`}
                   className={`relative flex items-center gap-4 sm:gap-8 ${
                     index % 2 === 1 ? "sm:flex-row-reverse" : ""
                   }`}
@@ -388,7 +393,7 @@ export default function Family() {
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visibleEmployeeCards.map((member, index) => (
               <article
-                key={member.role}
+                key={member.id || `${member.name}-${member.role}-${employeeStart + index}`}
                 className="group flex h-full flex-col overflow-hidden rounded-xl border border-[#EFF6FF] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#0066D6]/30 hover:shadow-xl hover:shadow-[#0066D6]/5"
               >
                 {/* Fixed image area */}
