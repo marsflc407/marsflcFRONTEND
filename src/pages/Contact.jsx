@@ -27,7 +27,7 @@ const DEFAULT_SETTINGS = {
   addressLabel: "Address",
   address: COMPANY.address,
   phoneLabel: "Hotline",
-  phone: COMPANY.phone,
+  phone: "09606500415",
   emailLabel: "General Enquiries",
   email: COMPANY.email,
   callCenterTitle: "24/7 High-Capacity Call Center",
@@ -99,7 +99,12 @@ export default function Contact() {
       .get()
       .then((response) => {
         if (response?.data)
-          setSettings({ ...DEFAULT_SETTINGS, ...response.data });
+          setSettings({
+            ...DEFAULT_SETTINGS,
+            ...response.data,
+            phone: "09606500415",
+            email: COMPANY.email,
+          });
       })
       .catch(() => {});
   }, []);

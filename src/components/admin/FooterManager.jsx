@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS = {
     "Suite-C, Level-7, Mirpur Tower, 4 Darus Salam Road, Mirpur-1, Dhaka-1216, Bangladesh",
   phone: "01988812929",
   phoneHref: "tel:+8801988812929",
-  email: "marsflc407@gmail.com",
+  email: "marsflc@gmail.com",
   hoursTitle: "Operational Hours",
   hours: [
     { title: "Call Center", value: "24 / 7 / 365" },
@@ -330,6 +330,6 @@ function ItemEditor({ collection, items, fields, onChange, onAdd, onRemove }) {
       >
         <Plus className="h-4 w-4" /> Add item
       </button>
-    </div>
+    </div>  
   );
 }
